@@ -51,6 +51,8 @@ set(LIBRARY_SRCS
   libraries/HTTPUpdate/src/HTTPUpdate.cpp
   libraries/NetBIOS/src/NetBIOS.cpp
   libraries/Preferences/src/Preferences.cpp
+  libraries/Rainmaker/src/RMakerGeneric.cpp
+  libraries/Rainmaker/src/RMakerSupport.cpp
   libraries/SD_MMC/src/SD_MMC.cpp
   libraries/SD/src/SD.cpp
   libraries/SD/src/sd_diskio.cpp
@@ -129,6 +131,7 @@ set(COMPONENT_ADD_INCLUDEDIRS
   libraries/HTTPUpdate/src
   libraries/NetBIOS/src
   libraries/Preferences/src
+  libraries/Rainmaker/src
   libraries/SD_MMC/src
   libraries/SD/src
   libraries/SimpleBLE/src
