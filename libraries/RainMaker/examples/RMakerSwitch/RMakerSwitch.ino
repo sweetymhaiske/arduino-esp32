@@ -16,8 +16,6 @@ void setup()
 {
     Serial.begin(115200);
 
-    WiFi.begin();
-
     RMaker.init("ESP Rainmaker Device", "Switch + Lightbulb");
 
     Device my_device;
@@ -33,8 +31,6 @@ void setup()
 
     RMaker.enableOTA(OTA_USING_PARAMS);
     RMaker.start();
-    
-    WiFi.beginProvision();
 }
 
 void loop()

@@ -11,7 +11,7 @@ class RMakerClass : public RMakerOTAClass
 {
     public:
         void init(char *node_name, char *node_type);
-        esp_err_t start();
+        void start();
         esp_err_t stop();
 
         char *getNodeID();
