@@ -9,6 +9,10 @@ static esp_err_t light_callback(const char *dev_name, const char *param_name, Pa
 
 static esp_err_t device_callback(const char *dev_name, const char *param_name, Param_t val, void *priv_data)
 {
+    if (strcmp(param_name, "power") == 0) {
+      Serial.printf("Received value = %s for %s - %s",val.val.b? "true" : "false", dev_name, param_name);
+    }
+    esp_rmaker_update_param(dev_name, param_name, val);
     return ESP_OK;
 }
 

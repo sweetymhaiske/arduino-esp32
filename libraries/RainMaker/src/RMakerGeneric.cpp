@@ -1,5 +1,4 @@
 #include "RMakerGeneric.h"
-
 #include <esp_rmaker_standard_params.h>
 #include <esp_rmaker_core.h>
 #include <esp_err.h>
