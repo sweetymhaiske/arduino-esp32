@@ -1,23 +1,72 @@
 #include <esp_err.h>
 #include "RMakerType.h"
-
-typedef esp_err_t (*DeviceParamCb)(const char *dev_name, const char *param_name, Param_t val, void *data);
+#include <esp_rmaker_standard_params.h>
 
 class RMakerGenericClass
 {
-    public:
+    private:
         const char *device_name;
+        const char *service_name;
+        esp_rmaker_device_t *device_handle;
+        esp_rmaker_param_t *param;
+    
+    public:
 
-        //Device API
-        esp_err_t createDevice(const char *dev_name, const char *dev_type, DeviceParamCb cb, void *priv_data);
+        RMakerGenericClass()
+        {
+            device_name = NULL;
+            service_name = NULL;
+            device_handle = NULL;
+            param =  NULL;
+        }
+
+        //setter methods
+        void setDeviceName(const char *device_name)
+        {
+            this->device_name = device_name;
+        }
+        
+        void setServiceName(const char *service_name)
+        {
+            this->service_name = service_name;
+        }        
+
+        void setDeviceHandle(esp_rmaker_device_t *device_handle)
+        {
+            this->device_handle = device_handle;
+        }
+        
+        void setDeviceParam(esp_rmaker_param_t *param)
+        {
+            this->param = param;
+        }
+        
+        //getter methods
+        const char *getDeviceName()
+        {
+            return device_name;
+        }
+        
+        const char *getServiceName()
+        {
+            return service_name;
+        }
+        
+        esp_rmaker_device_t *getDeviceHandle()
+        {
+            return device_handle;
+        }
+         
+        esp_rmaker_param_t *getDeviceParam()
+        {
+            return param;
+        }
+
+        void addCb(deviceWriteCb write_cb, deviceReadCb read_cb); 
+        void deleteDevice();
         esp_err_t addDeviceAttr(const char *attr_name, const char *val);
-        esp_err_t addDeviceParam(const char *param_name, esp_rmaker_param_val_t val, uint8_t properties);
-        esp_err_t assignPrimaryParam(const char *param_name);
-
-        //Service API
-        esp_err_t createService(const char *serv_name, const char *type, DeviceParamCb cb, void *priv_data);
-        esp_err_t addServiceParam(const char *serv_name, const char *param_name, esp_rmaker_param_val_t val, uint8_t properties);
-
+        void assignPrimaryParam(char *param_name);
+        
         //Device Parameter
         esp_err_t addNameParam(const char *param_name = "name");
         esp_err_t addPowerParam(bool val, const char *param_name = "power");
@@ -31,13 +80,7 @@ class RMakerGenericClass
         esp_err_t addTempratureParam(float val, const char *param_name = "temprature");
         
         //Service Parameter
-        esp_err_t addOTAStatusParam(const char *serv_name, const char *param_name);
-        esp_err_t addOTAInfoParam(const char *serv_name, const char *param_name);
-        esp_err_t addOTAUrlParam(const char *serv_name, const char *param_name);
-
-        //Parameter
-        esp_err_t updateParam(const char *param_name, Param_t val);
-        esp_err_t paramAddUIType(const char *name, const char *ui_type);
-        esp_err_t paramAddBounds(const char *param_name, esp_rmaker_param_val_t min, esp_rmaker_param_val_t max, esp_rmaker_param_val_t step);
-        esp_err_t paramAddType(const char *param_name, const char* type);
+        esp_err_t addOTAStatusParam(const char *param_name = ESP_RMAKER_DEF_OTA_STATUS_NAME);
+        esp_err_t addOTAInfoParam(const char *param_name = ESP_RMAKER_DEF_OTA_INFO_NAME);
+        esp_err_t addOTAUrlParam(const char *param_name = ESP_RMAKER_DEF_OTA_URL_NAME);
 };

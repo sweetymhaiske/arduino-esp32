@@ -1,21 +1,26 @@
 #include "RMakerGeneric.h"
 #include "RMakerType.h"
-
 #include <esp_rmaker_standard_devices.h>
+#include <esp32-hal.h>
 
 class Device : public RMakerGenericClass
 {
-
+    public:
+        void createDevice(const char *dev_name, const char *dev_type, void *priv_data);
 };
 
 class Switch : public RMakerGenericClass
 {
     public:
         Switch();
-        Switch(const char *dev_name, DeviceParamCb cb, void *priv_data)
+        Switch(void *priv_data, bool power = DEFAULT_SWITCH_POWER)
         {
-            device_name = dev_name;
-            esp_rmaker_create_switch_device(dev_name, cb, priv_data, DEFAULT_SWITCH_POWER);
+            setDeviceName("Switch");
+            esp_rmaker_device_t *dev_handle = esp_rmaker_switch_device_create("Switch", priv_data, power);
+            setDeviceHandle(dev_handle);
+            if(dev_handle == NULL){
+                log_e("Switch Device not created");
+            }
         }
 };
 
@@ -23,22 +28,43 @@ class LightBulb : public RMakerGenericClass
 {
     public:
         LightBulb();
-        LightBulb(const char *dev_name, DeviceParamCb cb, void *priv_data)
+        LightBulb(void *priv_data, bool power = DEFAULT_LIGHT_POWER)
         {
-            device_name = dev_name;
-            esp_rmaker_create_lightbulb_device(dev_name, cb, priv_data, DEFAULT_LIGHT_POWER);
-        }
+            setDeviceName("Light");
+            esp_rmaker_device_t *dev_handle = esp_rmaker_lightbulb_device_create("Light", priv_data, power);
+            setDeviceHandle(dev_handle);
+            if(dev_handle == NULL){
+                log_e("Light Device not created");
+            }
+        }   
 };       
 
 class Fan : public RMakerGenericClass
 {
     public:
         Fan();
-        Fan(const char *dev_name, DeviceParamCb cb, void *priv_data)
+        Fan(void *priv_data, bool power = DEFAULT_FAN_POWER)
         {
-            device_name = dev_name;
-            esp_rmaker_create_switch_device(dev_name, cb, priv_data, DEFAULT_FAN_POWER);
+            setDeviceName("Fan");
+            esp_rmaker_device_t *dev_handle = esp_rmaker_fan_device_create("Fan", priv_data, power);
+            setDeviceHandle(dev_handle);
+            if(dev_handle == NULL){
+                log_e("Fan Device not created");
+            }
         }
 };
 
-
+class TemperatureSensor : public RMakerGenericClass
+{
+    public:
+        TemperatureSensor();
+        TemperatureSensor(void *priv_data, bool power = DEFAULT_TEMPERATURE)
+        {
+            setDeviceName("Temperature Sensor");
+            esp_rmaker_device_t *dev_handle = esp_rmaker_temp_sensor_device_create("Temperature Sensor", priv_data, power);
+            setDeviceHandle(dev_handle);
+            if(dev_handle == NULL){
+                log_e("Temperature Sensor Device not created");
+            }
+        }
+};

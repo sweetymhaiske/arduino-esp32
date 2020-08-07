@@ -115,7 +115,8 @@ void WiFiProvClass :: beginProvision(prov_scheme_t prov_scheme, scheme_handler_t
     	return;
     }
 #endif
-
+    config.app_event_handler.event_cb = NULL;
+    config.app_event_handler.user_data = NULL;
     wifiLowLevelInit(true);
     if(wifi_prov_mgr_init(config) != ESP_OK){
     	log_e("wifi_prov_mgr_init failed!");

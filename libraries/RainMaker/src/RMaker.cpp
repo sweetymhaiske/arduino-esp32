@@ -2,15 +2,19 @@
 #include "WiFi.h"
 #include <esp_wifi.h>
 #include <nvs_flash.h>
+#include <driver/gpio.h>
 #include <esp_rmaker_user_mapping.h>
 #include <esp_rmaker_core.h>
 #include <esp_err.h>
-
+#include <esp_rmaker_standard_params.h>
+static bool g_power_state = DEFAULT_SWITCH_POWER;
+esp_rmaker_node_t *node = NULL;
 #undef IPADDR_NONE
+extern esp_rmaker_param_t *getParamHandle(const char *param_name);
 
 static EventGroupHandle_t wifi_event_group;
 static const int WIFI_CONNECTED_EVENT = BIT0;
-const int button_gpio = 0;
+//const int button_gpio = 0;
 extern bool tcpipInit();
 bool rainmaker = false;
 
@@ -38,22 +42,59 @@ static void event_handler(void* arg, esp_event_base_t event_base,
         log_i("Invalid event received!");
     }   
 }
-void app_driver_init()
+/*
+static void set_power_state(bool target)
 {
-   pinMode(button_gpio, INPUT);
+    gpio_set_level(GPIO_NUM_19, target);
 }
 
-void RMakerClass::init(char *node_name, char *node_type)
+int IRAM_ATTR app_driver_set_state(bool state)
 {
+    if(g_power_state != state) {
+        g_power_state = state;
+        set_power_state(g_power_state);
+    }   
+    return ESP_OK;
+}
+
+static void push_btn_cb()
+{
+    bool new_state = !g_power_state;
+    app_driver_set_state(new_state);
+}
+*/
+/*void hello()
+{
+    pinMode(button_gpio, INPUT);
+}
+//int buttonState = 0;
+void app_driver_init()
+{
+//    pinMode(button_gpio, INPUT);
+  //  int buttonState = 0;
+    //while(1){
+        buttonState = digitalRead(button_gpio);
+        if(buttonState == HIGH){
+            log_i("HELLO");
+        }
+        else
+        {
+            log_i("HI");
+        } 
+    //}
+    gpio_config_t io_conf = {
+        .mode = GPIO_MODE_OUTPUT,
+        .pull_up_en = GPIO_PULLUP_ENABLE
+    };
+    io_conf.pin_bit_mask = ((uint64_t)1 << GPIO_NUM_19);
+    Configure the GPIO 
+    gpio_config(&io_conf);
+}*/
+
+esp_rmaker_node_t* RMakerClass::initNode(char *node_name, char *node_type)
+{
+    //app_driver_init();
     rainmaker = true;
-    esp_rmaker_console_init();
-    app_driver_init();
-    esp_err_t err = nvs_flash_init();
-    if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-        nvs_flash_erase();
-        log_i("NVS ERROR");
-        err = nvs_flash_init();
-    }
     if(tcpipInit() == false){
         log_e("Init Fail");   
     }
@@ -66,18 +107,14 @@ void RMakerClass::init(char *node_name, char *node_type)
     esp_event_handler_register(RMAKER_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL);
 
     esp_rmaker_config_t rainmaker_cfg;
-    rainmaker_cfg.info.name = node_name;
-    rainmaker_cfg.info.type = node_type;
-    rainmaker_cfg.info.fw_version = NULL;
-    rainmaker_cfg.info.model = NULL;
     rainmaker_cfg.enable_time_sync = false;
  
-    err = esp_rmaker_init(&rainmaker_cfg);
-    if (err != ESP_OK) {
-        log_e("Could not initialise ESP RainMaker. Aborting!!!");
+    node = esp_rmaker_node_init(&rainmaker_cfg, node_name, node_type);
+    if (!node){
+        log_e("Could not initialise Node.");
+        return NULL;
     }
-    if(err == ESP_OK)
-        log_i("Rainmaker Initialised successfully\n");   
+    return node;
 }
 
 void RMakerClass::start()
@@ -88,7 +125,25 @@ void RMakerClass::start()
         return;
     }
     WiFi.beginProvision(); 
-    xEventGroupWaitBits(wifi_event_group, WIFI_CONNECTED_EVENT, false, true, portMAX_DELAY);
+}
+
+void RMakerClass::addNodeDevice(const esp_rmaker_node_t *node, RMakerGenericClass device)
+{
+    esp_err_t err;
+    err = esp_rmaker_node_add_device(node, device.getDeviceHandle());
+    if(err != ESP_OK){
+        log_e("Device was not added to the Node");
+        return;
+    }
+}
+void RMakerClass::removeNodeDevice(const esp_rmaker_node_t *node, RMakerGenericClass device)
+{
+    esp_err_t err;
+    err = esp_rmaker_node_remove_device(node, device.getDeviceHandle());
+    if(err != ESP_OK){
+        log_e("Device was not added to the Node");
+        return;
+    }   
 }
 
 esp_err_t RMakerClass::stop()
@@ -96,6 +151,18 @@ esp_err_t RMakerClass::stop()
     return esp_rmaker_stop();
 }
 
+void RMakerClass::deinitNode(const esp_rmaker_node_t *node)
+{
+    esp_err_t err = esp_rmaker_node_deinit(node);
+    if(err != ESP_OK) {
+        log_e("Node deinit fail");
+    }
+}
+
+const esp_rmaker_node_t *getNode()
+{
+    return esp_rmaker_get_node();
+}
 char * RMakerClass::getNodeID()
 {
     return esp_rmaker_get_node_id();
@@ -103,12 +170,29 @@ char * RMakerClass::getNodeID()
 
 esp_rmaker_node_info_t* RMakerClass::getNodeInfo()
 {
-    return esp_rmaker_get_node_info();
+    return esp_rmaker_node_get_info(getNode());
 }
 
 esp_err_t RMakerClass::addNodeAttr(const char *attr_name, const char *val)
 {
-    return esp_rmaker_node_add_attribute(attr_name, val);
+    return esp_rmaker_node_add_attribute(getNode(), attr_name, val);
 }
 
+void RMakerClass::updateAndReportParam(const param_handle *param, const param_val val)
+{
+    esp_err_t err = esp_rmaker_param_update_and_report(param, val);
+    if(err != ESP_OK) {
+        log_e("Update Parameter error");
+    }   
+}
+
+char *RMakerClass::getParamName(const param_handle *param)
+{
+    return (char*)esp_rmaker_param_get_name(param);
+}
+
+char *RMakerClass::getDeviceName(const device_handle *device)
+{
+    return (char *)esp_rmaker_device_get_name(device);
+}
 RMakerClass RMaker;
