@@ -5,7 +5,7 @@
 class Service : public RMakerGenericClass
 {
     public:
-        void createService(const char *serv_name, const char *type, void *priv_data);
+        void createService(const char *serv_name, const char *serv_type, void *priv_data);
 };
 
 class OTAService : public RMakerGenericClass
@@ -20,6 +20,5 @@ class OTAService : public RMakerGenericClass
             if(dev_handle == NULL){
                 log_e("OTA Service not created");
             }
-
         }
 };

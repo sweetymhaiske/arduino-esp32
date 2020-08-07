@@ -4,5 +4,5 @@
 class RMakerOTAClass
 {
     public:
-        esp_err_t enableOTA(OTAType_t type);
+        esp_err_t enableOTA(ota_type_t type);
 };

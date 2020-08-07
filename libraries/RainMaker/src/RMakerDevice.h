@@ -19,7 +19,7 @@ class Switch : public RMakerGenericClass
             esp_rmaker_device_t *dev_handle = esp_rmaker_switch_device_create("Switch", priv_data, power);
             setDeviceHandle(dev_handle);
             if(dev_handle == NULL){
-                log_e("Switch Device not created");
+                log_e("Switch device not created");
             }
         }
 };
@@ -34,7 +34,7 @@ class LightBulb : public RMakerGenericClass
             esp_rmaker_device_t *dev_handle = esp_rmaker_lightbulb_device_create("Light", priv_data, power);
             setDeviceHandle(dev_handle);
             if(dev_handle == NULL){
-                log_e("Light Device not created");
+                log_e("Light device not created");
             }
         }   
 };       
@@ -49,7 +49,7 @@ class Fan : public RMakerGenericClass
             esp_rmaker_device_t *dev_handle = esp_rmaker_fan_device_create("Fan", priv_data, power);
             setDeviceHandle(dev_handle);
             if(dev_handle == NULL){
-                log_e("Fan Device not created");
+                log_e("Fan device not created");
             }
         }
 };
@@ -64,7 +64,7 @@ class TemperatureSensor : public RMakerGenericClass
             esp_rmaker_device_t *dev_handle = esp_rmaker_temp_sensor_device_create("Temperature Sensor", priv_data, power);
             setDeviceHandle(dev_handle);
             if(dev_handle == NULL){
-                log_e("Temperature Sensor Device not created");
+                log_e("Temperature Sensor device not created");
             }
         }
 };

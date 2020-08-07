@@ -1,21 +1,21 @@
 #include <esp_rmaker_core.h>
 #include <esp_rmaker_ota.h>
 
-typedef esp_rmaker_node_t* Node;
-typedef esp_rmaker_param_val_t param_val;
-typedef esp_rmaker_write_ctx_t write_ctx;
-typedef esp_rmaker_read_ctx_t read_ctx;
-typedef esp_rmaker_device_t device_handle;
-typedef esp_rmaker_param_t param_handle;
+typedef esp_rmaker_node_t* node_t;
+typedef esp_rmaker_node_info_t node_info_t;
+typedef esp_rmaker_param_val_t param_val_t;
+typedef esp_rmaker_write_ctx_t write_ctx_t;
+typedef esp_rmaker_read_ctx_t read_ctx_t;
+typedef esp_rmaker_device_t device_handle_t;
+typedef esp_rmaker_param_t param_handle_t;
+typedef esp_rmaker_ota_type_t ota_type_t;
 
-typedef esp_err_t (*deviceWriteCb)(const device_handle *device, const param_handle *param, const param_val val, void *priv_data, write_ctx *ctx);
+typedef void (*deviceWriteCb)(const char *device, const char *param, const param_val_t val, void *priv_data, write_ctx_t *ctx);
 
-typedef esp_err_t (*deviceReadCb)(const device_handle *device, const param_handle *param, void *priv_data, read_ctx *ctx); 
+typedef void (*deviceReadCb)(const char *device, const char *param, void *priv_data, read_ctx_t *ctx); 
 
 #define PARAMS 13
 
-#define Param_t esp_rmaker_param_val_t
-#define OTAType_t esp_rmaker_ota_type_t 
 #define DEFAULT_SWITCH_POWER        true
 #define DEFAULT_LIGHT_POWER         true
 #define DEFAULT_LIGHT_BRIGHTNESS    25

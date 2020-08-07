@@ -1,6 +1,6 @@
 #include "RMakerOTA.h"
 
-esp_err_t RMakerOTAClass::enableOTA(OTAType_t type)
+esp_err_t RMakerOTAClass::enableOTA(ota_type_t type)
 {
     esp_rmaker_ota_config_t ota_config;
     ota_config.server_cert = ESP_RMAKER_OTA_DEFAULT_SERVER_CERT;

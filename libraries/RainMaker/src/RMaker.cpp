@@ -1,25 +1,24 @@
 #include "RMaker.h"
 #include "WiFi.h"
 #include <esp_wifi.h>
-#include <nvs_flash.h>
-#include <driver/gpio.h>
 #include <esp_rmaker_user_mapping.h>
 #include <esp_rmaker_core.h>
 #include <esp_err.h>
 #include <esp_rmaker_standard_params.h>
-static bool g_power_state = DEFAULT_SWITCH_POWER;
-esp_rmaker_node_t *node = NULL;
-#undef IPADDR_NONE
-extern esp_rmaker_param_t *getParamHandle(const char *param_name);
-
-static EventGroupHandle_t wifi_event_group;
-static const int WIFI_CONNECTED_EVENT = BIT0;
-//const int button_gpio = 0;
+static esp_err_t err;
 extern bool tcpipInit();
-bool rainmaker = false;
 
-static void event_handler(void* arg, esp_event_base_t event_base,
-                          int event_id, void* event_data)
+void RMakerClass::enableRainMaker()
+{
+    rainMakerEnable = true;
+}
+
+bool RMakerClass::isRainMakerEnable()
+{
+    return rainMakerEnable;
+}
+
+static void event_handler(void *arg, esp_event_base_t event_base, int event_id, void *event_data)
 {
     if (event_base == RMAKER_EVENT) {
         switch (event_id) {
@@ -42,73 +41,25 @@ static void event_handler(void* arg, esp_event_base_t event_base,
         log_i("Invalid event received!");
     }   
 }
-/*
-static void set_power_state(bool target)
+
+void RMakerClass::setTimeSync(bool val)
 {
-    gpio_set_level(GPIO_NUM_19, target);
+    rainmaker_cfg.enable_time_sync = val;
 }
 
-int IRAM_ATTR app_driver_set_state(bool state)
+esp_rmaker_node_t* RMakerClass::initNode(const char *node_name, const char *node_type)
 {
-    if(g_power_state != state) {
-        g_power_state = state;
-        set_power_state(g_power_state);
-    }   
-    return ESP_OK;
-}
-
-static void push_btn_cb()
-{
-    bool new_state = !g_power_state;
-    app_driver_set_state(new_state);
-}
-*/
-/*void hello()
-{
-    pinMode(button_gpio, INPUT);
-}
-//int buttonState = 0;
-void app_driver_init()
-{
-//    pinMode(button_gpio, INPUT);
-  //  int buttonState = 0;
-    //while(1){
-        buttonState = digitalRead(button_gpio);
-        if(buttonState == HIGH){
-            log_i("HELLO");
-        }
-        else
-        {
-            log_i("HI");
-        } 
-    //}
-    gpio_config_t io_conf = {
-        .mode = GPIO_MODE_OUTPUT,
-        .pull_up_en = GPIO_PULLUP_ENABLE
-    };
-    io_conf.pin_bit_mask = ((uint64_t)1 << GPIO_NUM_19);
-    Configure the GPIO 
-    gpio_config(&io_conf);
-}*/
-
-esp_rmaker_node_t* RMakerClass::initNode(char *node_name, char *node_type)
-{
-    //app_driver_init();
-    rainmaker = true;
-    if(tcpipInit() == false){
-        log_e("Init Fail");   
+    enableRainMaker();
+    if(tcpipInit() == false) {
+        log_e("TCP/IP init fail");   
     }
-    wifi_event_group = xEventGroupCreate();
     
     esp_event_handler_register(WIFI_PROV_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL);
     esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL);
     esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler, NULL);
     
     esp_event_handler_register(RMAKER_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL);
-
-    esp_rmaker_config_t rainmaker_cfg;
-    rainmaker_cfg.enable_time_sync = false;
- 
+    esp_rmaker_node_t *node = NULL;
     node = esp_rmaker_node_init(&rainmaker_cfg, node_name, node_type);
     if (!node){
         log_e("Could not initialise Node.");
@@ -119,51 +70,36 @@ esp_rmaker_node_t* RMakerClass::initNode(char *node_name, char *node_type)
 
 void RMakerClass::start()
 {
-    esp_err_t err = esp_rmaker_start();    
+    err = esp_rmaker_start();    
     if(err != ESP_OK){
         log_e("ESP RainMaker core task fail");
         return;
     }
-    WiFi.beginProvision(); 
+    WiFi.beginProvision(WIFI_PROV_SCHEME_SOFTAP, WIFI_PROV_SCHEME_HANDLER_NONE, WIFI_PROV_SECURITY_1, "abcd1234", "PROV_123"); 
 }
 
-void RMakerClass::addNodeDevice(const esp_rmaker_node_t *node, RMakerGenericClass device)
+void RMakerClass::stop()
 {
-    esp_err_t err;
-    err = esp_rmaker_node_add_device(node, device.getDeviceHandle());
-    if(err != ESP_OK){
-        log_e("Device was not added to the Node");
-        return;
+    err = esp_rmaker_stop();
+    if(err != ESP_OK) {
+        log_e("ESP RainMaker stop error");
     }
-}
-void RMakerClass::removeNodeDevice(const esp_rmaker_node_t *node, RMakerGenericClass device)
-{
-    esp_err_t err;
-    err = esp_rmaker_node_remove_device(node, device.getDeviceHandle());
-    if(err != ESP_OK){
-        log_e("Device was not added to the Node");
-        return;
-    }   
-}
-
-esp_err_t RMakerClass::stop()
-{
-    return esp_rmaker_stop();
 }
 
 void RMakerClass::deinitNode(const esp_rmaker_node_t *node)
 {
-    esp_err_t err = esp_rmaker_node_deinit(node);
+    err = esp_rmaker_node_deinit(node);
     if(err != ESP_OK) {
         log_e("Node deinit fail");
     }
 }
 
-const esp_rmaker_node_t *getNode()
+const esp_rmaker_node_t* RMakerClass::getNode()
 {
     return esp_rmaker_get_node();
 }
-char * RMakerClass::getNodeID()
+
+char* RMakerClass::getNodeID()
 {
     return esp_rmaker_get_node_id();
 }
@@ -175,24 +111,32 @@ esp_rmaker_node_info_t* RMakerClass::getNodeInfo()
 
 esp_err_t RMakerClass::addNodeAttr(const char *attr_name, const char *val)
 {
-    return esp_rmaker_node_add_attribute(getNode(), attr_name, val);
-}
-
-void RMakerClass::updateAndReportParam(const param_handle *param, const param_val val)
-{
-    esp_err_t err = esp_rmaker_param_update_and_report(param, val);
+    err = esp_rmaker_node_add_attribute(getNode(), attr_name, val);
     if(err != ESP_OK) {
-        log_e("Update Parameter error");
+        log_e("Failed to add attribute to the Node");
+        return err;
+    }
+    return ESP_OK;
+}
+
+esp_err_t RMakerClass::addNodeDevice(const esp_rmaker_node_t *node, RMakerGenericClass device)
+{
+    err = esp_rmaker_node_add_device(node, device.getDeviceHandle());
+    if(err != ESP_OK){
+        log_e("Device was not added to the Node");
+        return err;
+    }
+    return ESP_OK;
+}
+
+esp_err_t RMakerClass::removeNodeDevice(const esp_rmaker_node_t *node, RMakerGenericClass device)
+{
+    err = esp_rmaker_node_remove_device(node, device.getDeviceHandle());
+    if(err != ESP_OK){
+        log_e("Device was not added to the Node");
+        return err;
     }   
+    return ESP_OK;
 }
 
-char *RMakerClass::getParamName(const param_handle *param)
-{
-    return (char*)esp_rmaker_param_get_name(param);
-}
-
-char *RMakerClass::getDeviceName(const device_handle *device)
-{
-    return (char *)esp_rmaker_device_get_name(device);
-}
 RMakerClass RMaker;

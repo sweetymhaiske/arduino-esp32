@@ -9,20 +9,30 @@
 
 class RMakerClass : public RMakerOTAClass
 {
+    private:
+        esp_rmaker_config_t rainmaker_cfg = {false};
+    
+    protected:
+        bool rainMakerEnable;
+
     public:
-        esp_rmaker_node_t *initNode(char *node_name, char *node_type);
-        void deinitNode(const esp_rmaker_node_t *node);
-        const esp_rmaker_node_t *getNode();
-        void addNodeDevice(const esp_rmaker_node_t *node, RMakerGenericClass device);
-        void removeNodeDevice(const esp_rmaker_node_t *node, RMakerGenericClass device); 
-        esp_err_t stop();
+        RMakerClass() {
+            rainMakerEnable = false;
+        }
+        
+        void enableRainMaker();
+        bool isRainMakerEnable();
+        void setTimeSync(bool val);
+        esp_rmaker_node_t* initNode(const char *node_name, const char *node_type);
         void start();
-        void updateAndReportParam(const param_handle *param, const param_val val);
-        char *getParamName(const param_handle *param);
-        char *getDeviceName(const device_handle *device);
-        char *getNodeID();
+        void stop();
+        void deinitNode(const esp_rmaker_node_t *node);
+        const esp_rmaker_node_t* getNode();
+        char* getNodeID();
         esp_rmaker_node_info_t *getNodeInfo();
         esp_err_t addNodeAttr(const char *attr_name, const char *val);
+        esp_err_t addNodeDevice(const esp_rmaker_node_t *node, RMakerGenericClass device);
+        esp_err_t removeNodeDevice(const esp_rmaker_node_t *node, RMakerGenericClass device);  
 };
 
 extern RMakerClass RMaker;
