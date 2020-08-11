@@ -21,7 +21,7 @@ class RMakerClass : public RMakerOTAClass
         }
         
         void enableRainMaker();
-        bool isRainMakerEnable();
+        bool isRainMakerEnabled();
         void setTimeSync(bool val);
         esp_rmaker_node_t* initNode(const char *node_name, const char *node_type);
         void start();

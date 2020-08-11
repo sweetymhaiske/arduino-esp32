@@ -13,7 +13,7 @@ void RMakerClass::enableRainMaker()
     rainMakerEnable = true;
 }
 
-bool RMakerClass::isRainMakerEnable()
+bool RMakerClass::isRainMakerEnabled()
 {
     return rainMakerEnable;
 }
