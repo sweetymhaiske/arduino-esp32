@@ -2,7 +2,7 @@
 #include "RMaker.h"
 static node_t my_node;
 static Fan my_fan(NULL);
-static int g_speed;
+static int g_speed = DEFAULT_FAN_SPEED;
 
 static const int button_gpio = 0;
 int buttonState = 0;
@@ -15,6 +15,7 @@ void write_callback(const char *device_name, const char *param_name, const param
         Serial.printf("\nReceived value = %d for %s - %s", val.val.i, device_name, param_name);
         g_speed = val.val.i;
     }  
+    RMaker.updateAndReportParam();
 }
 
 void setup()

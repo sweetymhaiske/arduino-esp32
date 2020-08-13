@@ -8,6 +8,7 @@ void write_callback(const char *device_name, const char *param_name, const param
     if(strcmp(param_name, "power") == 0) {
         Serial.printf("\nReceived value = %s for %s - %s", val.val.b? "true" : "false", device_name, param_name);
     }
+    RMaker.updateAndReportParam();
 }
 
 void setup()

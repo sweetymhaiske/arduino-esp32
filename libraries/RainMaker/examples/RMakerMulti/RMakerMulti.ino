@@ -16,6 +16,7 @@ void write_callback(const char *device_name, const char *param_name, const param
     } else if(strcmp(param_name, "speed") == 0){
         Serial.printf("\nReceived value = %s for %s - %s", val.val.b? "true" : "false", device_name, param_name);
     }   
+    RMaker.updateAndReportParam();
 }
 
 void setup()

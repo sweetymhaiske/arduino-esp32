@@ -1,6 +1,7 @@
 #include <esp_err.h>
 #include <esp_rmaker_standard_params.h>
 #include "RMakerType.h"
+#include "RMakerParam.h"
 #define PARAMS 13
 
 class RMakerGenericClass
@@ -55,7 +56,10 @@ class RMakerGenericClass
         esp_err_t addDeviceAttr(const char *attr_name, const char *val);
         void assignPrimaryParam(char *param_name);
         
-        //Device Parameter
+        //Generic Device Parameter
+        esp_err_t addParam(Param parameter);
+        
+        //Standard Device Parameter
         esp_err_t addNameParam(const char *param_name = ESP_RMAKER_DEF_NAME_PARAM);
         esp_err_t addPowerParam(bool val, const char *param_name = ESP_RMAKER_DEF_POWER_NAME);
         esp_err_t addBrightnessParam(int val, const char *param_name = ESP_RMAKER_DEF_BRIGHTNESS_NAME);        

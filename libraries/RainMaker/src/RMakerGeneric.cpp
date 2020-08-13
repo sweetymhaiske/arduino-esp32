@@ -3,6 +3,7 @@
 #include <esp_rmaker_core.h>
 #include <esp_err.h>
 #include <esp32-hal.h>
+Param pobj;
 static esp_err_t err;
 void (*write_cb)(const char*, const char*, param_val_t, void*, write_ctx_t*);
 void (*read_cb)(const char*, const char*, void*, read_ctx_t*);
@@ -12,7 +13,9 @@ static esp_err_t write_callback(const device_handle_t *device, const param_handl
     char *param_name = esp_rmaker_param_get_name(param);
     char *device_name = esp_rmaker_device_get_name(device);
     write_cb(device_name, param_name, val, priv_data, ctx);
-    esp_rmaker_param_update_and_report(param, val);
+    if(pobj.getUpdateParam() == true) {
+        esp_rmaker_param_update_and_report(param, val);
+    }
     return ESP_OK;
 }
 
@@ -89,7 +92,18 @@ void RMakerGenericClass::assignPrimaryParam(char *param_name)
     }
 }
 
-//Device Parameter
+//Generic Device Parameter
+esp_err_t RMakerGenericClass::addParam(Param parameter)
+{
+    err = esp_rmaker_device_add_param(getDeviceHandle(), parameter.getParamHandle());
+    if(err != ESP_OK) {
+        log_e("Adding Parameter error");
+        return err;
+    }
+    return ESP_OK;
+}
+
+//Standard Device Parameter
 esp_err_t RMakerGenericClass::addNameParam(const char *param_name)
 {
     param_handle[NAME_PARAM] = esp_rmaker_name_param_create(param_name, getDeviceName());
@@ -180,7 +194,7 @@ esp_err_t RMakerGenericClass::updateAndReportParam(const char *param_name, bool 
         log_e("Update paramter fail");
         return err;
     }else {
-        log_i("Device : %s, Param Name : %s, Val : %d", getDeviceName(), param_name, my_val);
+        log_i("Device : %s, Param Name : %s, Val : %s", getDeviceName(), param_name, my_val ? "true" : "false");
     }
     return ESP_OK;
 }
