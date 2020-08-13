@@ -12,10 +12,8 @@ void write_callback(const char *device_name, const char *param_name, const param
     if(strcmp(param_name, "power") == 0) {
         Serial.printf("\nReceived value = %s for %s - %s", val.val.b? "true" : "false", device_name, param_name);
     } else if(strcmp(param_name, "brightness") == 0) {
-        Serial.printf("\nReceived value = %s for %s - %s", val.val.b? "true" : "false", device_name, param_name);
-    } else if(strcmp(param_name, "speed") == 0){
-        Serial.printf("\nReceived value = %s for %s - %s", val.val.b? "true" : "false", device_name, param_name);
-    }   
+        Serial.printf("\nReceived value = %d for %s - %s", val.val.i, device_name, param_name);
+    } 
     RMaker.updateAndReportParam();
 }
 

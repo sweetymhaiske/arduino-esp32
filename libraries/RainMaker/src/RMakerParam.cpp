@@ -3,12 +3,6 @@
 #include <esp32-hal.h>
 
 static esp_err_t err;
-extern Param pobj;
-
-void Param::updateAndReportParam()
-{
-    pobj.setUpdateParam(true);
-}
 
 void Param::createParam(const char *param_name, const char *param_type, param_val_t val, uint8_t properties)
 {

@@ -37,3 +37,8 @@ typedef void (*deviceReadCb)(const char *device, const char *param, void *priv_d
 #define STATUS_PARAM                10
 #define INFO_PARAM                  11
 #define URL_PARAM                   12
+
+param_val_t value(int);
+param_val_t value(bool);
+param_val_t value(char *);
+param_val_t value(float);

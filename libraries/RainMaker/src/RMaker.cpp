@@ -37,8 +37,6 @@ static void event_handler(void *arg, esp_event_base_t event_base, int event_id, 
             default:
                 log_i("Unhandled RainMaker Event:");
         }
-    } else {
-        log_i("Invalid event received!");
     }   
 }
 
@@ -75,7 +73,7 @@ void RMakerClass::start()
         log_e("ESP RainMaker core task fail");
         return;
     }
-    WiFi.beginProvision(WIFI_PROV_SCHEME_SOFTAP, WIFI_PROV_SCHEME_HANDLER_NONE, WIFI_PROV_SECURITY_1, "abcd1234", "PROV_123"); 
+    WiFi.beginProvision(WIFI_PROV_SCHEME_SOFTAP, WIFI_PROV_SCHEME_HANDLER_NONE, WIFI_PROV_SECURITY_1, "abcd1234", "PROV_1234"); 
 }
 
 void RMakerClass::stop()
@@ -109,6 +107,11 @@ esp_rmaker_node_info_t* RMakerClass::getNodeInfo()
     return esp_rmaker_node_get_info(getNode());
 }
 
+void RMakerClass::updateAndReportParam()
+{
+    RMaker.setUpdateParam(true);
+}
+
 esp_err_t RMakerClass::addNodeAttr(const char *attr_name, const char *val)
 {
     err = esp_rmaker_node_add_attribute(getNode(), attr_name, val);
@@ -119,7 +122,7 @@ esp_err_t RMakerClass::addNodeAttr(const char *attr_name, const char *val)
     return ESP_OK;
 }
 
-esp_err_t RMakerClass::addNodeDevice(const esp_rmaker_node_t *node, RMakerGenericClass device)
+esp_err_t RMakerClass::addNodeDevice(const node_t node, RMakerGenericClass device)
 {
     err = esp_rmaker_node_add_device(node, device.getDeviceHandle());
     if(err != ESP_OK){
@@ -129,7 +132,7 @@ esp_err_t RMakerClass::addNodeDevice(const esp_rmaker_node_t *node, RMakerGeneri
     return ESP_OK;
 }
 
-esp_err_t RMakerClass::removeNodeDevice(const esp_rmaker_node_t *node, RMakerGenericClass device)
+esp_err_t RMakerClass::removeNodeDevice(const node_t node, RMakerGenericClass device)
 {
     err = esp_rmaker_node_remove_device(node, device.getDeviceHandle());
     if(err != ESP_OK){

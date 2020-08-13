@@ -1,9 +1,10 @@
-#include "RMakerGeneric.h"
+//#include "RMakerGeneric.h"
 #include <esp_rmaker_standard_params.h>
 #include <esp_rmaker_core.h>
 #include <esp_err.h>
 #include <esp32-hal.h>
-Param pobj;
+#include "RMaker.h"
+extern RMakerClass RMaker;
 static esp_err_t err;
 void (*write_cb)(const char*, const char*, param_val_t, void*, write_ctx_t*);
 void (*read_cb)(const char*, const char*, void*, read_ctx_t*);
@@ -13,7 +14,7 @@ static esp_err_t write_callback(const device_handle_t *device, const param_handl
     char *param_name = esp_rmaker_param_get_name(param);
     char *device_name = esp_rmaker_device_get_name(device);
     write_cb(device_name, param_name, val, priv_data, ctx);
-    if(pobj.getUpdateParam() == true) {
+    if(RMaker.getUpdateParam() == true) {
         esp_rmaker_param_update_and_report(param, val);
     }
     return ESP_OK;
