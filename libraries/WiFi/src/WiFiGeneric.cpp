@@ -24,8 +24,6 @@
 
 #include "WiFi.h"
 #include "WiFiGeneric.h"
-#include "RMaker.h"
-#include <esp_rmaker_user_mapping.h>
 
 extern "C" {
 #include <stdint.h>
@@ -422,18 +420,12 @@ static void _arduino_event_cb(void* arg, esp_event_base_t event_base, int32_t ev
 	 * */
 	} else if (event_base == WIFI_PROV_EVENT && event_id == WIFI_PROV_INIT) {
 		log_v("Provisioning Initialized!");
-        if(RMaker.isRainMakerEnabled()){
-            esp_rmaker_user_mapping_endpoint_create();
-        }
     	arduino_event.event_id = ARDUINO_EVENT_PROV_INIT;
 	} else if (event_base == WIFI_PROV_EVENT && event_id == WIFI_PROV_DEINIT) {
 		log_v("Provisioning Uninitialized!");
     	arduino_event.event_id = ARDUINO_EVENT_PROV_DEINIT;
 	} else if (event_base == WIFI_PROV_EVENT && event_id == WIFI_PROV_START) {
 		log_v("Provisioning Start!");
-        if(RMaker.isRainMakerEnabled()){
-            esp_rmaker_user_mapping_endpoint_register();
-        }
     	arduino_event.event_id = ARDUINO_EVENT_PROV_START;
 	} else if (event_base == WIFI_PROV_EVENT && event_id == WIFI_PROV_END) {
 		log_v("Provisioning End!");

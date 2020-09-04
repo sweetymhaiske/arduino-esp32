@@ -1,6 +1,6 @@
 //This example demonstrate the Rainmaker Switch example
 #include "RMaker.h"
-static node_t my_node;
+static Node my_node;
 static Device my_device;
 
 void write_callback(const char *device_name, const char *param_name, const param_val_t val, void *priv_data, write_ctx_t *ctx)
@@ -22,7 +22,7 @@ void setup()
     my_device.addNameParam();
     my_device.addPowerParam(true);
     my_device.assignPrimaryParam("power");
-    RMaker.addNodeDevice(my_node, my_device);
+    my_node.addDevice(my_device);
     
     RMaker.enableOTA(OTA_USING_PARAMS);
     RMaker.start();

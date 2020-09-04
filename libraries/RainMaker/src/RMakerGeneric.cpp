@@ -28,12 +28,14 @@ static esp_err_t read_callback(const device_handle_t *device, const param_handle
     return ESP_OK;
 }
 
-void RMakerGenericClass::deleteDevice()
+esp_err_t RMakerGenericClass::deleteDevice()
 {
     err = esp_rmaker_device_delete(getDeviceHandle());
     if(err != ESP_OK) {
         log_e("Device deletion error");
+        return err;
     }  
+    return ESP_OK;
 }
 
 void RMakerGenericClass::addCb(deviceWriteCb writeCb, deviceReadCb readCb)
@@ -50,7 +52,7 @@ esp_err_t RMakerGenericClass::addDeviceAttr(const char *attr_name, const char *v
 {
     err = esp_rmaker_device_add_attribute(getDeviceHandle(), attr_name, val);
     if(err != ESP_OK) {
-        log_e("Device attribute error");
+        log_e("Failed to add attriute to the device");
         return err;
     }
     return ESP_OK;
@@ -62,34 +64,37 @@ param_handle_t* getParamHandlebyName(esp_rmaker_device_t *device_handle, const c
     return param;
 }
 
-void RMakerGenericClass::assignPrimaryParam(char *param_name)
+void RMakerGenericClass::assignPrimaryParam(const char *param_name)
 {
-    if(param_name == ESP_RMAKER_DEF_NAME_PARAM) {
+    if(param_name == ESP_RMAKER_DEF_NAME_PARAM && param_handle[NAME_PARAM] != NULL) {
         esp_rmaker_device_assign_primary_param(getDeviceHandle(), param_handle[NAME_PARAM]);
-    } else if(param_name == ESP_RMAKER_DEF_POWER_NAME) {
+    } else if(param_name == ESP_RMAKER_DEF_POWER_NAME && param_handle[POWER_PARAM] != NULL) {
         esp_rmaker_device_assign_primary_param(getDeviceHandle(), param_handle[POWER_PARAM]);
-    } else if(param_name == ESP_RMAKER_DEF_BRIGHTNESS_NAME) {
+    } else if(param_name == ESP_RMAKER_DEF_BRIGHTNESS_NAME && param_handle[BRIGHTNESS_PARAM] != NULL) {
         esp_rmaker_device_assign_primary_param(getDeviceHandle(), param_handle[BRIGHTNESS_PARAM]);
-    } else if(param_name == ESP_RMAKER_DEF_HUE_NAME) {
+    } else if(param_name == ESP_RMAKER_DEF_HUE_NAME && param_handle[HUE_PARAM] != NULL) {
         esp_rmaker_device_assign_primary_param(getDeviceHandle(), param_handle[HUE_PARAM]);
-    } else if(param_name == ESP_RMAKER_DEF_SATURATION_NAME) {
+    } else if(param_name == ESP_RMAKER_DEF_SATURATION_NAME && param_handle[SATURATION_PARAM] != NULL) {
         esp_rmaker_device_assign_primary_param(getDeviceHandle(), param_handle[SATURATION_PARAM]);
-    } else if(param_name == ESP_RMAKER_DEF_INTENSITY_NAME) {
+    } else if(param_name == ESP_RMAKER_DEF_INTENSITY_NAME && param_handle[INTENSITY_PARAM] != NULL) {
         esp_rmaker_device_assign_primary_param(getDeviceHandle(), param_handle[INTENSITY_PARAM]);
-    } else if(param_name == ESP_RMAKER_DEF_CCT_NAME) {
+    } else if(param_name == ESP_RMAKER_DEF_CCT_NAME && param_handle[CCT_PARAM] != NULL) {
         esp_rmaker_device_assign_primary_param(getDeviceHandle(), param_handle[CCT_PARAM]);
-    } else if(param_name == ESP_RMAKER_DEF_DIRECTION_NAME) {
+    } else if(param_name == ESP_RMAKER_DEF_DIRECTION_NAME && param_handle[DIRECTION_PARAM] != NULL) {
         esp_rmaker_device_assign_primary_param(getDeviceHandle(), param_handle[DIRECTION_PARAM]);
-    } else if(param_name == ESP_RMAKER_DEF_SPEED_NAME) {
+    } else if(param_name == ESP_RMAKER_DEF_SPEED_NAME && param_handle[SPEED_PARAM] != NULL) {
         esp_rmaker_device_assign_primary_param(getDeviceHandle(), param_handle[SPEED_PARAM]);
-    } else if(param_name == ESP_RMAKER_DEF_TEMPERATURE_NAME) {
+    } else if(param_name == ESP_RMAKER_DEF_TEMPERATURE_NAME && param_handle[TEMPERATURE_PARAM] != NULL) {
         esp_rmaker_device_assign_primary_param(getDeviceHandle(), param_handle[TEMPERATURE_PARAM]);
-    } else if(param_name == ESP_RMAKER_DEF_OTA_STATUS_NAME) {
+    } else if(param_name == ESP_RMAKER_DEF_OTA_STATUS_NAME && param_handle[STATUS_PARAM] != NULL) {
         esp_rmaker_device_assign_primary_param(getDeviceHandle(), param_handle[STATUS_PARAM]);
-    } else if(param_name == ESP_RMAKER_DEF_OTA_INFO_NAME) {
+    } else if(param_name == ESP_RMAKER_DEF_OTA_INFO_NAME && param_handle[INFO_PARAM] != NULL) {
         esp_rmaker_device_assign_primary_param(getDeviceHandle(), param_handle[INFO_PARAM]);
-    } else if(param_name == ESP_RMAKER_DEF_OTA_URL_NAME) {
+    } else if(param_name == ESP_RMAKER_DEF_OTA_URL_NAME && param_handle[URL_PARAM] != NULL) {
         esp_rmaker_device_assign_primary_param(getDeviceHandle(), param_handle[URL_PARAM]);
+    } else {
+        log_e("Invalid Parameter");
+        return;
     }
 }
 
@@ -98,7 +103,7 @@ esp_err_t RMakerGenericClass::addParam(Param parameter)
 {
     err = esp_rmaker_device_add_param(getDeviceHandle(), parameter.getParamHandle());
     if(err != ESP_OK) {
-        log_e("Adding Parameter error");
+        log_e("Creating new parameter error");
         return err;
     }
     return ESP_OK;

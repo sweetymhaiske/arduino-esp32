@@ -1,7 +1,7 @@
 //This example demonstrate the RainMaker Fan example
 #include "RMaker.h"
-static node_t my_node;
-static Fan my_fan(NULL);
+static Node my_node;
+static Fan my_fan;
 static int g_speed = DEFAULT_FAN_SPEED;
 
 static const int button_gpio = 0;
@@ -27,7 +27,7 @@ void setup()
 
     my_fan.addCb(write_callback, NULL);
     my_fan.addSpeedParam(DEFAULT_FAN_SPEED);
-    RMaker.addNodeDevice(my_node, my_fan);
+    my_node.addDevice(my_fan);
 
     RMaker.start();
 }

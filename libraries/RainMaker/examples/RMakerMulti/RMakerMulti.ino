@@ -1,8 +1,8 @@
 #include "RMaker.h"
-static node_t my_node;
-static Switch switch_device(NULL);
-static LightBulb light_device(NULL);
-static TemperatureSensor temp_sensor_device(NULL);
+static Node my_node;
+static Switch switch_device;
+static LightBulb light_device;
+static TemperatureSensor temp_sensor_device;
 
 static const int button_gpio = 0;
 int buttonState = 0;
@@ -25,15 +25,15 @@ void setup()
     my_node = RMaker.initNode("ESP Rainmaker Multi Device", "Multi Device");
 
     switch_device.addCb(write_callback, NULL); 
-    RMaker.addNodeDevice(my_node, switch_device);
+    my_node.addDevice(switch_device);
     
     light_device.addCb(write_callback, NULL);
     light_device.addBrightnessParam(DEFAULT_LIGHT_BRIGHTNESS);
     light_device.addDeviceAttr("serial_number", "012345");
     light_device.addDeviceAttr("mac", "xx:yy:zz:aa:bb:cc");
-    RMaker.addNodeDevice(my_node, light_device);
+    my_node.addDevice(light_device);
 
-    RMaker.addNodeDevice(my_node, temp_sensor_device);
+    my_node.addDevice(temp_sensor_device);
     
     RMaker.start();
 }

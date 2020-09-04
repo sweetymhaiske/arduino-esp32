@@ -45,8 +45,9 @@ void RMakerClass::setTimeSync(bool val)
     rainmaker_cfg.enable_time_sync = val;
 }
 
-esp_rmaker_node_t* RMakerClass::initNode(const char *node_name, const char *node_type)
+Node RMakerClass::initNode(const char *node_name, const char *node_type)
 {
+    Node node;
     enableRainMaker();
     if(tcpipInit() == false) {
         log_e("TCP/IP init fail");   
@@ -57,12 +58,13 @@ esp_rmaker_node_t* RMakerClass::initNode(const char *node_name, const char *node
     esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler, NULL);
     
     esp_event_handler_register(RMAKER_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL);
-    esp_rmaker_node_t *node = NULL;
-    node = esp_rmaker_node_init(&rainmaker_cfg, node_name, node_type);
-    if (!node){
+    esp_rmaker_node_t *rnode = NULL;
+    rnode = esp_rmaker_node_init(&rainmaker_cfg, node_name, node_type);
+    if (!rnode){
         log_e("Could not initialise Node.");
-        return NULL;
+        return node;
     }
+    node.setNodeHandle(rnode);
     return node;
 }
 
@@ -84,62 +86,17 @@ void RMakerClass::stop()
     }
 }
 
-void RMakerClass::deinitNode(const esp_rmaker_node_t *node)
+void RMakerClass::deinitNode(Node rnode)
 {
-    err = esp_rmaker_node_deinit(node);
+    err = esp_rmaker_node_deinit(rnode.getNodeHandle());
     if(err != ESP_OK) {
         log_e("Node deinit fail");
     }
 }
 
-const esp_rmaker_node_t* RMakerClass::getNode()
-{
-    return esp_rmaker_get_node();
-}
-
-char* RMakerClass::getNodeID()
-{
-    return esp_rmaker_get_node_id();
-}
-
-esp_rmaker_node_info_t* RMakerClass::getNodeInfo()
-{
-    return esp_rmaker_node_get_info(getNode());
-}
-
 void RMakerClass::updateAndReportParam()
 {
     RMaker.setUpdateParam(true);
-}
-
-esp_err_t RMakerClass::addNodeAttr(const char *attr_name, const char *val)
-{
-    err = esp_rmaker_node_add_attribute(getNode(), attr_name, val);
-    if(err != ESP_OK) {
-        log_e("Failed to add attribute to the Node");
-        return err;
-    }
-    return ESP_OK;
-}
-
-esp_err_t RMakerClass::addNodeDevice(const node_t node, RMakerGenericClass device)
-{
-    err = esp_rmaker_node_add_device(node, device.getDeviceHandle());
-    if(err != ESP_OK){
-        log_e("Device was not added to the Node");
-        return err;
-    }
-    return ESP_OK;
-}
-
-esp_err_t RMakerClass::removeNodeDevice(const node_t node, RMakerGenericClass device)
-{
-    err = esp_rmaker_node_remove_device(node, device.getDeviceHandle());
-    if(err != ESP_OK){
-        log_e("Device was not added to the Node");
-        return err;
-    }   
-    return ESP_OK;
 }
 
 RMakerClass RMaker;

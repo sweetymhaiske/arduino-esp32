@@ -51,10 +51,10 @@ class RMakerGenericClass
             return device_handle;
         }
        
-        void deleteDevice();
+        esp_err_t deleteDevice();
         void addCb(deviceWriteCb write_cb, deviceReadCb read_cb); 
         esp_err_t addDeviceAttr(const char *attr_name, const char *val);
-        void assignPrimaryParam(char *param_name);
+        void assignPrimaryParam(const char *param_name);
         
         //Generic Device Parameter
         esp_err_t addParam(Param parameter);

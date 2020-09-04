@@ -26,6 +26,8 @@
 #include <esp_wifi.h>
 #include <esp_event.h>
 #include <esp32-hal.h>
+#include "RMaker.h"
+#include <esp_rmaker_user_mapping.h>
 
 #include <nvs_flash.h>
 #if CONFIG_IDF_TARGET_ESP32
@@ -156,18 +158,27 @@ void WiFiProvClass :: beginProvision(prov_scheme_t prov_scheme, scheme_handler_t
 #if CONFIG_IDF_TARGET_ESP32
         }
 #endif
-
-        if(wifi_prov_mgr_endpoint_create("custom-data") != ESP_OK){
-        	log_e("wifi_prov_mgr_endpoint_create failed!");
-        	return;
+        if(RMaker.isRainMakerEnabled()){
+            esp_rmaker_user_mapping_endpoint_create();
+        } else {
+            if(wifi_prov_mgr_endpoint_create("custom-data") != ESP_OK){
+        	    log_e("wifi_prov_mgr_endpoint_create failed!");
+        	    return;
+            }
         }
+
         if(wifi_prov_mgr_start_provisioning(security, pop, service_name, service_key) != ESP_OK){
         	log_e("wifi_prov_mgr_start_provisioning failed!");
         	return;
         }
-        if(wifi_prov_mgr_endpoint_register("custom-data", custom_prov_data_handler, NULL) != ESP_OK){
-        	log_e("wifi_prov_mgr_endpoint_register failed!");
-        	return;
+
+        if(RMaker.isRainMakerEnabled()){
+            esp_rmaker_user_mapping_endpoint_register();
+        } else {
+            if(wifi_prov_mgr_endpoint_register("custom-data", custom_prov_data_handler, NULL) != ESP_OK){
+        	    log_e("wifi_prov_mgr_endpoint_register failed!");
+            	return;
+            }
         }
     } else {
         wifi_prov_mgr_deinit();
