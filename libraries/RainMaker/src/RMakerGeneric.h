@@ -9,8 +9,8 @@ class RMakerGenericClass
     private:
         const char *device_name;
         const char *service_name;
-        esp_rmaker_device_t *device_handle;
-        esp_rmaker_param_t *param_handle[PARAMS] = {NULL};
+        device_handle_t *device_handle;
+        param_handle_t *param_handle[PARAMS] = {NULL};
      
     public:
         RMakerGenericClass()
@@ -55,7 +55,8 @@ class RMakerGenericClass
         void addCb(deviceWriteCb write_cb, deviceReadCb read_cb); 
         esp_err_t addDeviceAttr(const char *attr_name, const char *val);
         void assignPrimaryParam(const char *param_name);
-        
+        esp_err_t assignPrimaryParam(Param p);
+ 
         //Generic Device Parameter
         esp_err_t addParam(Param parameter);
         

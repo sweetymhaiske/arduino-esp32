@@ -98,12 +98,22 @@ void RMakerGenericClass::assignPrimaryParam(const char *param_name)
     }
 }
 
+esp_err_t RMakerGenericClass::assignPrimaryParam(Param p)
+{
+    err = esp_rmaker_device_assign_primary_param(getDeviceHandle(), p.getParamHandle());
+    if(err != ESP_OK) {
+        log_e("Failed to assign custom parameter as primary parameter");
+        return err;
+    }
+    return ESP_OK;
+}
+
 //Generic Device Parameter
 esp_err_t RMakerGenericClass::addParam(Param parameter)
 {
     err = esp_rmaker_device_add_param(getDeviceHandle(), parameter.getParamHandle());
     if(err != ESP_OK) {
-        log_e("Creating new parameter error");
+        log_e("Adding custom parameter error");
         return err;
     }
     return ESP_OK;

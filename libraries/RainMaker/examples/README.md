@@ -202,7 +202,8 @@ my_device.addTempratureParam(float val);
 ### assignPrimaryParam()
 It assigns a parameter (already added using addXParam()) as a primary parameter, which can be used by clients (phone apps specifically) to give prominence to it.
 ```
-my_device.assignPrimaryParam(char *param_name);
+my_device.assignPrimaryParam(char * param_name);
+my_device.assignPrimaryParam(Param p1);
 ```
 * **Parameter**
 1. `param_name` : Name of the parameter.
@@ -219,7 +220,7 @@ my_device.addParam(Param parameter);
 ### updateAndReportParam()
 It updates the parameter assosicated with particular device on ESP RainMaker cloud.
 ```
-my_device.updateAndReportParam(const char *param_name, value);
+my_device.updateAndReportParam(const char * param_name, value);
 ```
 * **Parameters**
 1. `param_name` : Name of the parameter
@@ -304,7 +305,7 @@ my_param.addBounds(param_val_t min, param_val_t max, param_val_t step);
 2. `max` : Maximum value
 3. `step` : step Minimum stepping
 
-`Sample example : my_param.addBounds(value(0), value(100), 5);
+`Sample example : my_param.addBounds(value(0), value(100), value(5));`
 
 ## RainMaker SERVICE API's
 `Service` class exposes API's for service.
