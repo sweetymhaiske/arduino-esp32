@@ -75,7 +75,6 @@ void RMakerClass::start()
         log_e("ESP RainMaker core task fail");
         return;
     }
-    WiFi.beginProvision(WIFI_PROV_SCHEME_SOFTAP, WIFI_PROV_SCHEME_HANDLER_NONE, WIFI_PROV_SECURITY_1, "abcd1234", "PROV_1234"); 
 }
 
 void RMakerClass::stop()

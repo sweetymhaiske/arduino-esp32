@@ -7,6 +7,8 @@
 #define PROV_TRANSPORT_BLE      "ble"
 #define QRCODE_BASE_URL     "https://rainmaker.espressif.com/qrcode.html"
 
+const char *transport_mode;
+
 static void print_qr(const char *name, const char *pop, const char *transport)
 {
     if (!name || !pop || !transport) {

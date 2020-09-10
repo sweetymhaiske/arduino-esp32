@@ -1,5 +1,7 @@
 //This example demonstrate the Rainmaker Switch example
 #include "RMaker.h"
+#include "WiFi.h"
+
 static Node my_node;
 static Device my_device;
 
@@ -26,6 +28,7 @@ void setup()
     
     RMaker.enableOTA(OTA_USING_PARAMS);
     RMaker.start();
+    WiFi.beginProvision(WIFI_PROV_SCHEME_SOFTAP, WIFI_PROV_SCHEME_HANDLER_NONE, WIFI_PROV_SECURITY_1, "abcd1234", "PROV_1234"); 
 }
 
 void loop()

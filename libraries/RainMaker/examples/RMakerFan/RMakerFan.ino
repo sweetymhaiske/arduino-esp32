@@ -1,5 +1,7 @@
 //This example demonstrate the RainMaker Fan example
 #include "RMaker.h"
+#include "WiFi.h"
+
 static Node my_node;
 static Fan my_fan;
 static int g_speed = DEFAULT_FAN_SPEED;
@@ -30,6 +32,7 @@ void setup()
     my_node.addDevice(my_fan);
 
     RMaker.start();
+    WiFi.beginProvision(WIFI_PROV_SCHEME_SOFTAP, WIFI_PROV_SCHEME_HANDLER_NONE, WIFI_PROV_SECURITY_1, "abcd1234", "PROV_1234");
 }
 
 void loop()

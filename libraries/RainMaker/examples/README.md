@@ -26,6 +26,7 @@ It performs provisioning and starts the ESP RainMaker Agent.
 RMaker.start()
 ```
 > NOTE : ESP Rainmaker Agent should be initialized before this call.
+> Once ESP RainMaker Agent starts, compulsorily call WiFi.beginProvision() API.
 
 ### RMaker.stop()
 It stops the ESP RainMaker Agent which was started using `RMaker.start()`.

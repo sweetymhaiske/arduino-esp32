@@ -1,4 +1,6 @@
 #include "RMaker.h"
+#include "WiFi.h"
+
 static Node my_node;
 static Switch switch_device;
 static LightBulb light_device;
@@ -36,6 +38,7 @@ void setup()
     my_node.addDevice(temp_sensor_device);
     
     RMaker.start();
+    WiFi.beginProvision(WIFI_PROV_SCHEME_SOFTAP, WIFI_PROV_SCHEME_HANDLER_NONE, WIFI_PROV_SECURITY_1, "abcd1234", "PROV_1234");
 }
 
 void loop()

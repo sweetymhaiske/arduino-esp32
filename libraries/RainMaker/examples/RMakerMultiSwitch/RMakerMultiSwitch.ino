@@ -1,5 +1,7 @@
 //This example demonstrate the Rainmaker Switch example
 #include "RMaker.h"
+#include "WiFi.h"
+
 static Node devkitc;
 
 static int gpio_0 = 0;
@@ -40,6 +42,7 @@ void setup()
     devkitc.addDevice(switch3);
   
     RMaker.start();
+    WiFi.beginProvision(WIFI_PROV_SCHEME_SOFTAP, WIFI_PROV_SCHEME_HANDLER_NONE, WIFI_PROV_SECURITY_1, "abcd1234", "PROV_1234");
 }
 
 void loop()
