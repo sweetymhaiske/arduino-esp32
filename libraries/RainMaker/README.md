@@ -37,4 +37,8 @@ Please check the ESP RainMaker documentation [here](http://rainmaker.espressif.c
 
 Each example has its own README with additional information about using this library.
 
-## Claiming
+##Claiming
+
+> NOTE : It is mandatory to call provisioning API according to the board specified below, since it is responsible for user-node mapping.
+1. ESP32 Board - Assisted claiming + BLE Provisioning
+2. ESP32S2 Board - Self Claiming + SOFTAP Provisioning

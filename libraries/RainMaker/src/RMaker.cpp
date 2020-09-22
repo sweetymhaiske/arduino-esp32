@@ -7,6 +7,7 @@
 #include <esp_rmaker_standard_params.h>
 static esp_err_t err;
 extern bool tcpipInit();
+bool wifiLowLevelInit(bool persistent);
 
 void RMakerClass::enableRainMaker()
 {
@@ -49,6 +50,7 @@ Node RMakerClass::initNode(const char *node_name, const char *node_type)
 {
     Node node;
     enableRainMaker();
+    wifiLowLevelInit(true);
     if(tcpipInit() == false) {
         log_e("TCP/IP init fail");   
     }

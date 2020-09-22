@@ -158,12 +158,15 @@ void WiFiProvClass :: beginProvision(prov_scheme_t prov_scheme, scheme_handler_t
         }
 #endif
         if(RMaker.isRainMakerEnabled()){
+#if CONFIG_IDF_TARGET_ESP32
             if(prov_scheme == WIFI_PROV_SCHEME_BLE){
                 transport_mode = PROV_TRANSPORT_BLE;
             } else {
+#endif
                 transport_mode = PROV_TRANSPORT_SOFTAP;   
+#if CONFIG_IDF_TARGET_ESP32
             }
-            esp_rmaker_user_mapping_endpoint_create();
+#endif
         } else {
             if(wifi_prov_mgr_endpoint_create("custom-data") != ESP_OK){
         	    log_e("wifi_prov_mgr_endpoint_create failed!");
@@ -177,7 +180,6 @@ void WiFiProvClass :: beginProvision(prov_scheme_t prov_scheme, scheme_handler_t
         }
 
         if(RMaker.isRainMakerEnabled()){
-            esp_rmaker_user_mapping_endpoint_register();
             print_qr(service_name, pop, transport_mode);
         } else {
             if(wifi_prov_mgr_endpoint_register("custom-data", custom_prov_data_handler, NULL) != ESP_OK){

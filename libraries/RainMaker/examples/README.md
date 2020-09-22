@@ -3,7 +3,7 @@
 ## RainMaker Agent API
  
 ### RMaker.initNode()
-This API initializes and creates ESP RainMaker Node and initialize WiFi. 
+This initializes ESP RainMaker agent and creates the node and initialize WiFi. 
 ```
 RMaker.initNode(const char * node_name, const char * node_type);
 ```
@@ -17,25 +17,27 @@ RMaker.initNode(const char * node_name, const char * node_type);
 
 > NOTE : This should be the first call before using any other ESP RainMaker API. 
 * You can also set the configuration of node using following API's
- 1. RMaker.setTimeSync()
-> NOTE : If you want to set the configuration for the node then the above API should be called first and then `RMaker.initNode()`.
+ 1. RMaker.setTimeSync(bool val)
+> NOTE : If you want to set the configuration for the node then these configuration API's must be called before `RMaker.initNode()`.
 
 ### RMaker.start()
-It performs provisioning and starts the ESP RainMaker Agent.
+It starts the ESP RainMaker agent.
 ```
 RMaker.start()
 ```
-> NOTE : ESP Rainmaker Agent should be initialized before this call.
-> Once ESP RainMaker Agent starts, compulsorily call WiFi.beginProvision() API.
+> NOTE :
+ 
+> 1. ESP Rainmaker agent should be initialized before this call.
+> 2. Once ESP RainMaker agent starts, compulsorily call WiFi.beginProvision() API. WiFi initialization is already handled inside in `RMaker.intiNode()`
 
 ### RMaker.stop()
-It stops the ESP RainMaker Agent which was started using `RMaker.start()`.
+It stops the ESP RainMaker agent which was started using `RMaker.start()`.
 ```
 RMaker.stop()
 ```
 
 ### RMaker.deinitNode()
-It deinitialize the ESP RainMaker Node created using `RMaker.initNode()`.
+It deinitialize the ESP RainMaker agent and node created using `RMaker.initNode()`.
 ```
 RMaker.deinitNode(Node node)
 ```
@@ -67,7 +69,7 @@ RMaker.enableOTA(ota_type_t type);
 > NOTE : my_node is the object of Node class.
 
 ### getNodeID()
-It returns the unique node_id assigned to the node. This node_id is usually the MAC address of the node.
+It returns the unique node_id assigned to the node. This node_id is usually the MAC address of the device.
 ```
 my_node.getNodeID()
 ```
@@ -82,6 +84,13 @@ my_node.getNodeInfo();
 * **Return**
 1. `node_info_t` : Pointer to the structure node_info_t on success.
 2. `NULL` : on failure
+
+* **ESP RainMaker node info**
+It has following data member
+1. char * name
+2. char * type
+3. char * fw_version
+4. cahr * model
 
 ### addNodeAttr()
 It adds a new attribute as the metadata for the node.
@@ -98,7 +107,7 @@ my_node.addNodeAttr(const char *attr_name, const char *val);
 > NOTE : Only string values are allowed.
 
 ### addDevice()
-It adds device created using `createDevice()` of using `Standard class` to the node.
+It adds device to the node.
 ```
 my_node.addDevice(RMakerGenericClass device);
 ```
@@ -116,7 +125,7 @@ my_node.addDevice(RMakerGenericClass device);
 ### removeDevice()
 It removes device from the node.
 ```
-my_node.removeNodeDevice(RMakerGenericClass device);
+my_node.removeDevice(RMakerGenericClass device);
 ```
 * **Parameter**
 1. `device` : Device object
@@ -126,7 +135,7 @@ my_node.removeNodeDevice(RMakerGenericClass device);
 2. Error in case of failure
 
 ## RainMaker DEVICE API's
-`Device` class exposes the API's for device.
+`Device` class exposes the API's for virtual devices on the node.
 > NOTE : my_device is the object of Device class.
 
 ### createDevice()
@@ -144,10 +153,10 @@ my_device.createDevice(const char *dev_name, const char *dev_type, void *priv_da
         * ESP_RMAKER_DEVICE_TEMP_SENSOR   
 3. `priv_data` : Private data associated with the device. This will be passed to the callbacks.
 
-> NOTE : This created device should be added to the node using `RMaker.addNodeDevice(my_node, my_device)`.
+> NOTE : This created device should be added to the node using `my_node.addDevice(my_device)`.
 
 ### addDeviceAttr()
-It adds new attribute to the device.
+It adds attribute to the device. Device attributes are reported only once after a boot-up as part of the node configuration. Eg. Serial Number
 ```
 my_device.addDeviceAttr(const char *attr_name, const char *val);
 ```
@@ -159,10 +168,8 @@ my_device.addDeviceAttr(const char *attr_name, const char *val);
 1. `ESP_OK` : On success
 2. Error in case  of failure
 
-> NOTE : Device attributes are reported only once after a boot-up as part of the node configuration. Eg. Serial Number
-
 ### deleteDevice()
-It deletes the device created using `RMaker.createDevice()`.
+It deletes the device created using `RMaker.createDevice()`. This device should be first removed from the node using `my_node.removeDevice()`.
 ```
 my_device.deleteDevice();
 ```
@@ -204,10 +211,11 @@ my_device.addTempratureParam(float val);
 It assigns a parameter (already added using addXParam()) as a primary parameter, which can be used by clients (phone apps specifically) to give prominence to it.
 ```
 my_device.assignPrimaryParam(char * param_name);
-my_device.assignPrimaryParam(Param p1);
+my_device.assignPrimaryParam(Param custom_param);
 ```
 * **Parameter**
 1. `param_name` : Name of the parameter.
+2. `custom_param` : Parameter created using `Param` class.
 
 ### addParam()
 It allows user to add custom parameter to the device created using `Param` class.
@@ -257,7 +265,7 @@ Switch switch2("switch2", NULL, true);
 
 `NULL` : Private data for the device must be specified, which will be used in callback.
 
-`true` : default value for the primary param, in case of switch it is power.
+`true` : Default value for the primary param, in case of switch it is power.
 
 ## RainMaker PARAM API's
 `Param` class expose API for creating custom parameters for the devices.

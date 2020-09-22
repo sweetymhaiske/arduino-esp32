@@ -38,7 +38,13 @@ void setup()
     my_node.addDevice(temp_sensor_device);
     
     RMaker.start();
+
+#if CONFIG_IDF_TARGET_ESP32
+    WiFi.beginProvision(WIFI_PROV_SCHEME_BLE, WIFI_PROV_SCHEME_HANDLER_FREE_BTDM, WIFI_PROV_SECURITY_1, "abcd1234", "PROV_1234");
+#else
     WiFi.beginProvision(WIFI_PROV_SCHEME_SOFTAP, WIFI_PROV_SCHEME_HANDLER_NONE, WIFI_PROV_SECURITY_1, "abcd1234", "PROV_1234");
+#endif
+
 }
 
 void loop()

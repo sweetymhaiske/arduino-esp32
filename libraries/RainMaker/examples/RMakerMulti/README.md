@@ -3,10 +3,10 @@
 ## Compile n Flash firmware
 
 ### ESP32-S2 Board
-- SelfClaiming
+- SelfClaiming + SOFTAP Provisioning
 
 ### ESP32 Board
-- Refer README.md at [here](give link to outer readme)
+- Assisted Claiming + BLE Provisioning
 
 ## What to expect in this sketch ?
 
