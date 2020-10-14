@@ -8,8 +8,6 @@
 #include <esp_rmaker_schedule.h>
 
 static esp_err_t err;
-extern bool tcpipInit();
-bool wifiLowLevelInit(bool persistent);
 
 void RMakerClass::enableRainMaker()
 {
@@ -98,9 +96,11 @@ void RMakerClass::enableSchedule()
     }
 }
 
-void RMakerClass::updateAndReportParam()
+esp_err_t RMakerClass::enableOTA(ota_type_t type)
 {
-    RMaker.setUpdateParam(true);
+    esp_rmaker_ota_config_t ota_config;
+    ota_config.server_cert = ESP_RMAKER_OTA_DEFAULT_SERVER_CERT;
+    return esp_rmaker_ota_enable(&ota_config, type);
 }
 
 RMakerClass RMaker;

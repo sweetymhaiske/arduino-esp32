@@ -188,7 +188,6 @@ void WiFiProvClass :: beginProvision(prov_scheme_t prov_scheme, scheme_handler_t
             }
         }
     } else {
-        wifi_prov_mgr_deinit();
         log_i("Aleardy Provisioned");
 #if ARDUHAL_LOG_LEVEL >= ARDUHAL_LOG_LEVEL_INFO
         static wifi_config_t conf;
@@ -197,6 +196,7 @@ void WiFiProvClass :: beginProvision(prov_scheme_t prov_scheme, scheme_handler_t
 #endif
         esp_wifi_start();
         WiFi.begin();
+        wifi_prov_mgr_deinit();
     }
 }
 

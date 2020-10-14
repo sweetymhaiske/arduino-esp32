@@ -4,6 +4,7 @@ class Node
 {
     private:
         esp_rmaker_node_t *node;
+    
     public:
         Node()
         {
@@ -19,10 +20,10 @@ class Node
             return node;
         }
     
-        esp_err_t addDevice(RMakerGenericClass device);
-        esp_err_t removeDevice(RMakerGenericClass device);
+        esp_err_t addDevice(Device device);
+        esp_err_t removeDevice(Device device);
 
-        char* getNodeID();
-        esp_rmaker_node_info_t* getNodeInfo();
+        char *getNodeID();
+        esp_rmaker_node_info_t *getNodeInfo();
         esp_err_t addNodeAttr(const char *attr_name, const char *val);
 };

@@ -5,12 +5,15 @@
 static Node my_node;
 static Device my_device;
 
-void write_callback(const char *device_name, const char *param_name, const param_val_t val, void *priv_data, write_ctx_t *ctx)
+void write_callback(Device device, Param param, const param_val_t val, void *priv_data, write_ctx_t *ctx)
 {
+    const char *device_name = device.getDeviceName();
+    const char *param_name = param.getParamName();
+
     if(strcmp(param_name, "Power") == 0) {
-        Serial.printf("\nReceived value = %s for %s - %s", val.val.b? "true" : "false", device_name, param_name);
+        Serial.printf("\nReceived value = %s for %s - %s\n", val.val.b? "true" : "false", device_name, param_name);
     }
-    RMaker.updateAndReportParam();
+    param.updateAndReport(val);
 }
 
 void setup()
@@ -21,7 +24,7 @@ void setup()
      
     my_node = RMaker.initNode("ESP Rainmaker Device", "Switch");
 
-    my_device.createDevice("Switch", ESP_RMAKER_DEVICE_SWITCH, NULL);
+    my_device = createDevice("Switch", ESP_RMAKER_DEVICE_SWITCH, NULL);
     my_device.addCb(write_callback, NULL); 
     my_device.addNameParam();
     my_device.addPowerParam(true);

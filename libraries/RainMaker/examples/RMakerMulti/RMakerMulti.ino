@@ -9,14 +9,17 @@ static TemperatureSensor temp_sensor_device;
 static const int button_gpio = 0;
 int buttonState = 0;
 
-void write_callback(const char *device_name, const char *param_name, const param_val_t val, void *priv_data, write_ctx_t *ctx)
+void write_callback(Device device, Param param, const param_val_t val, void *priv_data, write_ctx_t *ctx)
 {
+    const char *device_name = device.getDeviceName();
+    const char *param_name = param.getParamName();
+
     if(strcmp(param_name, "Power") == 0) {
-        Serial.printf("\nReceived value = %s for %s - %s", val.val.b? "true" : "false", device_name, param_name);
+        Serial.printf("\nReceived value = %s for %s - %s\n", val.val.b? "true" : "false", device_name, param_name);
     } else if(strcmp(param_name, "Brightness") == 0) {
-        Serial.printf("\nReceived value = %d for %s - %s", val.val.i, device_name, param_name);
+        Serial.printf("\nReceived value = %d for %s - %s\n", val.val.i, device_name, param_name);
     } 
-    RMaker.updateAndReportParam();
+    param.updateAndReport(val);
 }
 
 void setup()

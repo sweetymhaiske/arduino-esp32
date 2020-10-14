@@ -13,17 +13,20 @@ static Switch switch1("switch1", &gpio_0);
 static Switch switch2("switch2", &gpio_16);
 static Switch switch3("switch3", &gpio_17);
 
-void write_callback(const char *device_name, const char *param_name, const param_val_t val, void *priv_data, write_ctx_t *ctx)
+void write_callback(Device device, Param param, const param_val_t val, void *priv_data, write_ctx_t *ctx)
 {
+    const char *device_name = device.getDeviceName();
+    const char *param_name = param.getParamName();
+
     if(strcmp(param_name, "Power") == 0) {
-        Serial.printf("\nReceived value = %s for %s - %s", val.val.b? "true" : "false", device_name, param_name);
+        Serial.printf("\nReceived value = %s for %s - %s\n", val.val.b? "true" : "false", device_name, param_name);
         if(strcmp(device_name, "switch1") == 0) {
             buttonState = val.val.b;
         }
     }
     if(priv_data != NULL)
-      Serial.printf("\nSwitch at pin : %d",*(int *)priv_data);
-    RMaker.updateAndReportParam();
+      Serial.printf("\nSwitch at pin : %d\n",*(int *)priv_data);
+    param.updateAndReport(val);
 }
 
 void setup()

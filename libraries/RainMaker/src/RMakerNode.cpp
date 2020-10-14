@@ -1,6 +1,7 @@
 #include "RMakerNode.h"
-esp_err_t err;
-esp_err_t Node::addDevice(RMakerGenericClass device)
+static esp_err_t err;
+
+esp_err_t Node::addDevice(Device device)
 {
     err = esp_rmaker_node_add_device(node, device.getDeviceHandle());
     if(err != ESP_OK){
@@ -10,7 +11,7 @@ esp_err_t Node::addDevice(RMakerGenericClass device)
     return ESP_OK;
 }
 
-esp_err_t Node::removeDevice(RMakerGenericClass device)
+esp_err_t Node::removeDevice(Device device)
 {
     err = esp_rmaker_node_remove_device(node, device.getDeviceHandle());
     if(err != ESP_OK){
@@ -20,12 +21,12 @@ esp_err_t Node::removeDevice(RMakerGenericClass device)
     return ESP_OK;
 }
 
-char* Node::getNodeID()
+char *Node::getNodeID()
 {
     return esp_rmaker_get_node_id();
 }
 
-esp_rmaker_node_info_t* Node::getNodeInfo()
+esp_rmaker_node_info_t *Node::getNodeInfo()
 {
     return esp_rmaker_node_get_info(node);
 }
