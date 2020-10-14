@@ -174,7 +174,9 @@ class WiFiGenericClass
     static void setHostname(const char * hostname);
 
     static esp_err_t _eventCallback(arduino_event_t *event);
-
+    
+    void init();
+    void deinit();
   protected:
     static bool _persistent;
     static bool _long_range;

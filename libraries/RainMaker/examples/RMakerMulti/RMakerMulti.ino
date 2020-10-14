@@ -11,9 +11,9 @@ int buttonState = 0;
 
 void write_callback(const char *device_name, const char *param_name, const param_val_t val, void *priv_data, write_ctx_t *ctx)
 {
-    if(strcmp(param_name, "power") == 0) {
+    if(strcmp(param_name, "Power") == 0) {
         Serial.printf("\nReceived value = %s for %s - %s", val.val.b? "true" : "false", device_name, param_name);
-    } else if(strcmp(param_name, "brightness") == 0) {
+    } else if(strcmp(param_name, "Brightness") == 0) {
         Serial.printf("\nReceived value = %d for %s - %s", val.val.i, device_name, param_name);
     } 
     RMaker.updateAndReportParam();
@@ -23,6 +23,8 @@ void setup()
 {
     Serial.begin(115200);
     pinMode(button_gpio, INPUT);
+    
+    WiFi.init();
     
     my_node = RMaker.initNode("ESP Rainmaker Multi Device", "Multi Device");
 
@@ -51,7 +53,7 @@ void loop()
 {
     buttonState = digitalRead(button_gpio);
     if(buttonState == LOW) {
-        light_device.updateAndReportParam("brightness", DEFAULT_LIGHT_BRIGHTNESS);
+        light_device.updateAndReportParam("Brightness", DEFAULT_LIGHT_BRIGHTNESS);
     }
     delay(100);
 }

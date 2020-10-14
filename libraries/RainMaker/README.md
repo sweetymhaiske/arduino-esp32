@@ -1,4 +1,4 @@
-# ESP32 RainMaker library for Arduino
+# ESP RainMaker library for Arduino
 The Arduino IDE provides an excellent library for working with ESP RainMaker.
 ESP RainMaker is an end-to-end solution offered by Espressif to enable remote control and monitoring for ESP32-S2 and ESP32 based products without any configuration required in the Cloud.
 The primary components of this solution are:
@@ -15,7 +15,7 @@ The key features of ESP RainMaker are:
 
 This RainMaker library is built using esp-rainmaker component.
 
-#### The link for esp-rainmaker repository
+#### Repository Source
 
 - [ESP RainMaker](https://github.com/espressif/esp-rainmaker)
 
@@ -37,7 +37,7 @@ Please check the ESP RainMaker documentation [here](http://rainmaker.espressif.c
 
 Each example has its own README with additional information about using this library.
 
-##Claiming
+## Claiming
 
 > NOTE : It is mandatory to call provisioning API according to the board specified below, since it is responsible for user-node mapping.
 1. ESP32 Board - Assisted claiming + BLE Provisioning

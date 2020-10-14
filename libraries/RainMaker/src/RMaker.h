@@ -36,8 +36,9 @@ class RMakerClass : public RMakerOTAClass, public Param
         bool isRainMakerEnabled();
 
         void setTimeSync(bool val);
-        Node initNode(const char *node_name, const char *node_type);
+        Node initNode(const char *name, const char *type);
         void deinitNode(Node node);
+        void enableSchedule();
 
         void start();
         void stop();

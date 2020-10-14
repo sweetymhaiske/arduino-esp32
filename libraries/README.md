@@ -61,8 +61,8 @@ arduino-esp32 includes libraries for Arduino compatibility along with some objec
 ### Preferences
   Flash keystore using ESP32 NVS
 
-### RainMaker
-  Added ESP RainMaker to Arduino
+### ESP RainMaker
+  End-to-end platform by Espressif that enables Makers to realize their IoT ideas faster.
 
 ### SD
   Secure Digital card filesystem using SPI access

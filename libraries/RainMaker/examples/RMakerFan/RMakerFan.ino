@@ -11,9 +11,9 @@ int buttonState = 0;
 
 void write_callback(const char *device_name, const char *param_name, const param_val_t val, void *priv_data, write_ctx_t *ctx)
 {
-    if(strcmp(param_name, "power") == 0) {
+    if(strcmp(param_name, "Power") == 0) {
         Serial.printf("\nReceived value = %s for %s - %s", val.val.b? "true" : "false", device_name, param_name);
-    } else if (strcmp(param_name, "speed") == 0) {
+    } else if (strcmp(param_name, "Speed") == 0) {
         Serial.printf("\nReceived value = %d for %s - %s", val.val.i, device_name, param_name);
         g_speed = val.val.i;
     }  
@@ -24,6 +24,8 @@ void setup()
 {
     Serial.begin(115200);
     pinMode(button_gpio, INPUT);
+    
+    WiFi.init();
     
     my_node = RMaker.initNode("ESP Rainmaker Device", "Fan");
 
@@ -50,11 +52,11 @@ void loop()
         if(g_speed > 5) {
             g_speed = 0;
         }
-        my_fan.updateAndReportParam("speed", g_speed);
+        my_fan.updateAndReportParam("Speed", g_speed);
         if(old_speed == 0) {
-            my_fan.updateAndReportParam("power", true);
+            my_fan.updateAndReportParam("Power", true);
         } else if(g_speed == 0) {
-            my_fan.updateAndReportParam("power", false);
+            my_fan.updateAndReportParam("Power", false);
         }
     }
     delay(100);

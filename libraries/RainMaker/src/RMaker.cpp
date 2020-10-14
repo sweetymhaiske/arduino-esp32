@@ -5,6 +5,8 @@
 #include <esp_rmaker_core.h>
 #include <esp_err.h>
 #include <esp_rmaker_standard_params.h>
+#include <esp_rmaker_schedule.h>
+
 static esp_err_t err;
 extern bool tcpipInit();
 bool wifiLowLevelInit(bool persistent);
@@ -46,22 +48,15 @@ void RMakerClass::setTimeSync(bool val)
     rainmaker_cfg.enable_time_sync = val;
 }
 
-Node RMakerClass::initNode(const char *node_name, const char *node_type)
+Node RMakerClass::initNode(const char *name, const char *type)
 {
     Node node;
     enableRainMaker();
-    wifiLowLevelInit(true);
-    if(tcpipInit() == false) {
-        log_e("TCP/IP init fail");   
-    }
-    
-    esp_event_handler_register(WIFI_PROV_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL);
-    esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL);
-    esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler, NULL);
-    
+
     esp_event_handler_register(RMAKER_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL);
+
     esp_rmaker_node_t *rnode = NULL;
-    rnode = esp_rmaker_node_init(&rainmaker_cfg, node_name, node_type);
+    rnode = esp_rmaker_node_init(&rainmaker_cfg, name, type);
     if (!rnode){
         log_e("Could not initialise Node.");
         return node;
@@ -92,6 +87,14 @@ void RMakerClass::deinitNode(Node rnode)
     err = esp_rmaker_node_deinit(rnode.getNodeHandle());
     if(err != ESP_OK) {
         log_e("Node deinit fail");
+    }
+}
+
+void RMakerClass::enableSchedule()
+{
+    err = esp_rmaker_schedule_enable();
+    if(err != ESP_OK) {
+        log_e("Schedule enable fail");
     }
 }
 

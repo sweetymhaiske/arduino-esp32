@@ -15,7 +15,7 @@ static Switch switch3("switch3", &gpio_17);
 
 void write_callback(const char *device_name, const char *param_name, const param_val_t val, void *priv_data, write_ctx_t *ctx)
 {
-    if(strcmp(param_name, "power") == 0) {
+    if(strcmp(param_name, "Power") == 0) {
         Serial.printf("\nReceived value = %s for %s - %s", val.val.b? "true" : "false", device_name, param_name);
         if(strcmp(device_name, "switch1") == 0) {
             buttonState = val.val.b;
@@ -30,6 +30,8 @@ void setup()
 {
     Serial.begin(115200);
     pinMode(gpio_0, INPUT);
+    
+    WiFi.init();
  
     devkitc = RMaker.initNode("ESP Rainmaker Device", "Multi-Switch");
 
@@ -40,7 +42,8 @@ void setup()
     devkitc.addDevice(switch1); 
     devkitc.addDevice(switch2);
     devkitc.addDevice(switch3);
-  
+
+    RMaker.enableSchedule();  
     RMaker.start();
 
 #if CONFIG_IDF_TARGET_ESP32
@@ -55,7 +58,7 @@ void loop()
 {
     if(digitalRead(gpio_0) == LOW) {
         buttonState = !buttonState;
-        switch1.updateAndReportParam("power", buttonState);
+        switch1.updateAndReportParam("Power", buttonState);
     }
     delay(100);
 }
