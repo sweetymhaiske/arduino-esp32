@@ -24,12 +24,12 @@ class RMakerClass
 
         void setTimeSync(bool val);
         Node initNode(const char *name, const char *type);
-        void deinitNode(Node node);
-        void enableSchedule();
+        esp_err_t deinitNode(Node node);
+        esp_err_t enableSchedule();
         esp_err_t enableOTA(ota_type_t type);
 
-        void start();
-        void stop();
+        esp_err_t start();
+        esp_err_t stop();
 };
 
 extern RMakerClass RMaker;

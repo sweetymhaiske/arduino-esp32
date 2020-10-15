@@ -60,7 +60,7 @@ class Device
         esp_err_t addHueParam(int val, const char *param_name = ESP_RMAKER_DEF_HUE_NAME);
         esp_err_t addSaturationParam(int val, const char *param_name = ESP_RMAKER_DEF_SATURATION_NAME);
         esp_err_t addIntensityParam(int val, const char *param_name = ESP_RMAKER_DEF_INTENSITY_NAME);
-        esp_err_t addCctParam(int val, const char *param_name = ESP_RMAKER_DEF_CCT_NAME);
+        esp_err_t addCCTParam(int val, const char *param_name = ESP_RMAKER_DEF_CCT_NAME);
         esp_err_t addDirectionParam(int val, const char *param_name = ESP_RMAKER_DEF_DIRECTION_NAME);
         esp_err_t addSpeedParam(int val, const char *param_name = ESP_RMAKER_DEF_SPEED_NAME);
         esp_err_t addTempratureParam(float val, const char *param_name = ESP_RMAKER_DEF_TEMPERATURE_NAME);
@@ -92,7 +92,7 @@ static Device createService(const char *serv_name, const char *serv_type, void *
     esp_rmaker_device_t *dev_handle = esp_rmaker_device_create(serv_name, serv_type, priv_data);
     new_service.setDeviceHandle(dev_handle);
     if(dev_handle == NULL){
-        log_e("Device create error");
+        log_e("Service create error");
     }   
     return new_service;
 }

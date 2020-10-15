@@ -7,7 +7,7 @@ static Node devkitc;
 static int gpio_0 = 0;
 static int gpio_16 = 16;
 static int gpio_17 = 17;
-bool buttonState = true;
+bool button_state = true;
 
 static Switch switch1("switch1", &gpio_0);
 static Switch switch2("switch2", &gpio_16);
@@ -21,7 +21,7 @@ void write_callback(Device device, Param param, const param_val_t val, void *pri
     if(strcmp(param_name, "Power") == 0) {
         Serial.printf("\nReceived value = %s for %s - %s\n", val.val.b? "true" : "false", device_name, param_name);
         if(strcmp(device_name, "switch1") == 0) {
-            buttonState = val.val.b;
+            button_state = val.val.b;
         }
     }
     if(priv_data != NULL)
@@ -60,8 +60,8 @@ void setup()
 void loop()
 {
     if(digitalRead(gpio_0) == LOW) {
-        buttonState = !buttonState;
-        switch1.updateAndReportParam("Power", buttonState);
+        button_state = !button_state;
+        switch1.updateAndReportParam("Power", button_state);
     }
     delay(100);
 }

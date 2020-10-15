@@ -56,51 +56,58 @@ Node RMakerClass::initNode(const char *name, const char *type)
     esp_rmaker_node_t *rnode = NULL;
     rnode = esp_rmaker_node_init(&rainmaker_cfg, name, type);
     if (!rnode){
-        log_e("Could not initialise Node.");
+        log_e("Node init failed");
         return node;
     }
     node.setNodeHandle(rnode);
     return node;
 }
 
-void RMakerClass::start()
+esp_err_t RMakerClass::start()
 {
     err = esp_rmaker_start();    
     if(err != ESP_OK){
-        log_e("ESP RainMaker core task fail");
-        return;
+        log_e("ESP RainMaker core task failed");
     }
+    return err;
 }
 
-void RMakerClass::stop()
+esp_err_t RMakerClass::stop()
 {
     err = esp_rmaker_stop();
     if(err != ESP_OK) {
         log_e("ESP RainMaker stop error");
     }
+    return err;
 }
 
-void RMakerClass::deinitNode(Node rnode)
+esp_err_t RMakerClass::deinitNode(Node rnode)
 {
     err = esp_rmaker_node_deinit(rnode.getNodeHandle());
     if(err != ESP_OK) {
-        log_e("Node deinit fail");
+        log_e("Node deinit failed");
     }
+    return err;
 }
 
-void RMakerClass::enableSchedule()
+esp_err_t RMakerClass::enableSchedule()
 {
     err = esp_rmaker_schedule_enable();
     if(err != ESP_OK) {
-        log_e("Schedule enable fail");
+        log_e("Schedule enable failed");
     }
+    return err;
 }
 
 esp_err_t RMakerClass::enableOTA(ota_type_t type)
 {
     esp_rmaker_ota_config_t ota_config;
     ota_config.server_cert = ESP_RMAKER_OTA_DEFAULT_SERVER_CERT;
-    return esp_rmaker_ota_enable(&ota_config, type);
+    err = esp_rmaker_ota_enable(&ota_config, type);
+    if(err != ESP_OK) {
+        log_e("OTA enable failed");
+    }
+    return err;
 }
 
 RMakerClass RMaker;

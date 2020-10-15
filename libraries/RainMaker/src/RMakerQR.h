@@ -21,6 +21,6 @@ static void print_qr(const char *name, const char *pop, const char *transport)
                     PROV_QR_VERSION, name, pop, transport);
     log_i("Scan this QR code from the phone app for Provisioning.");
     qrcode_display(payload);
-    ESP_LOGI(TAG, "If QR code is not visible, copy paste the below URL in a browser.\n%s?data=%s", QRCODE_BASE_URL, payload);
+    log_i("If QR code is not visible, copy paste the below URL in a browser.\n%s?data=%s", QRCODE_BASE_URL, payload);
 }
 

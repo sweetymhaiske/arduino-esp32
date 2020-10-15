@@ -7,7 +7,7 @@ static Fan my_fan;
 static int g_speed = DEFAULT_FAN_SPEED;
 
 static const int button_gpio = 0;
-int buttonState = 0;
+int button_state = 0;
 
 void write_callback(Device device, Param param, const param_val_t val, void *priv_data, write_ctx_t *ctx)
 {
@@ -48,8 +48,8 @@ void setup()
 
 void loop()
 {
-    buttonState = digitalRead(button_gpio);
-    if(buttonState == LOW) {
+    button_state = digitalRead(button_gpio);
+    if(button_state == LOW) {
         int old_speed = g_speed;
         g_speed++;
         if(g_speed > 5) {

@@ -24,6 +24,6 @@ class Node
         esp_err_t removeDevice(Device device);
 
         char *getNodeID();
-        esp_rmaker_node_info_t *getNodeInfo();
+        node_info_t *getNodeInfo();
         esp_err_t addNodeAttr(const char *attr_name, const char *val);
 };
