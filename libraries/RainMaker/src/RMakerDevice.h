@@ -1,41 +1,32 @@
-#include "RMakerType.h"
 #include "RMakerParam.h"
 #include <esp_rmaker_standard_devices.h>
 #include <esp_rmaker_standard_params.h>
-#include <esp32-hal.h>
 #include <map>
 
 class Device
 {
     private:
-        const char *device_name;
         const device_handle_t *device_handle;
-        std::map<const char *, const param_handle_t *> mp;
 
     public:
         Device()
         {
-            device_name = NULL;
             device_handle = NULL;
         }        
-        //setter methods
-        void setDeviceName(const char *device_name)
+        Device(const char *dev_name, const char *dev_type = NULL, void *priv_data = NULL)
         {
-            this->device_name = device_name;
+            device_handle = esp_rmaker_device_create(dev_name, dev_type, priv_data);
+            if(device_handle == NULL){
+                log_e("Device create error");
+            }   
         }
         void setDeviceHandle(const esp_rmaker_device_t *device_handle)
         {
             this->device_handle = device_handle;
         }
-
-        //getter methods
         const char *getDeviceName()
         {
-            return device_name;
-        }
-        const char *getServiceName()
-        {   
-            return device_name;
+            return esp_rmaker_device_get_name(device_handle);
         }
         const esp_rmaker_device_t *getDeviceHandle()
         {
@@ -48,8 +39,9 @@ class Device
         esp_err_t deleteDevice();
         void addCb(deviceWriteCb write_cb, deviceReadCb read_cb);
         esp_err_t addDeviceAttr(const char *attr_name, const char *val);
-        void assignPrimaryParam(const char *param_name);
-        
+        param_handle_t *getParamByName(const char *param_name);
+        esp_err_t assignPrimaryParam(param_handle_t *param);
+         
         //Generic Device Parameter
         esp_err_t addParam(Param parameter);
 
@@ -65,37 +57,13 @@ class Device
         esp_err_t addSpeedParam(int val, const char *param_name = ESP_RMAKER_DEF_SPEED_NAME);
         esp_err_t addTempratureParam(float val, const char *param_name = ESP_RMAKER_DEF_TEMPERATURE_NAME);
           
-        //Update Paramters
+        //Update Parameter
         esp_err_t updateAndReportParam(const char *param_name, bool val);
         esp_err_t updateAndReportParam(const char *param_name, int  val);
         esp_err_t updateAndReportParam(const char *param_name, float val);
         esp_err_t updateAndReportParam(const char *param_name, const char *val);
 
 };
-
-static Device createDevice(const char *dev_name, const char *dev_type, void *priv_data)
-{
-    Device new_device;
-    new_device.setDeviceName(dev_name);
-    esp_rmaker_device_t *dev_handle = esp_rmaker_device_create(dev_name, dev_type, priv_data);
-    new_device.setDeviceHandle(dev_handle);
-    if(dev_handle == NULL){
-        log_e("Device create error");
-    }   
-    return new_device;
-}
-
-static Device createService(const char *serv_name, const char *serv_type, void *priv_data)
-{
-    Device new_service;
-    new_service.setDeviceName(serv_name);
-    esp_rmaker_device_t *dev_handle = esp_rmaker_device_create(serv_name, serv_type, priv_data);
-    new_service.setDeviceHandle(dev_handle);
-    if(dev_handle == NULL){
-        log_e("Service create error");
-    }   
-    return new_service;
-}
 
 class Switch : public Device
 {
@@ -110,7 +78,6 @@ class Switch : public Device
         }
         void standardSwitchDevice(const char *dev_name, void *priv_data, bool power)
         {
-            setDeviceName(dev_name);
             esp_rmaker_device_t *dev_handle = esp_rmaker_switch_device_create(dev_name, priv_data, power);
             setDeviceHandle(dev_handle);
             if(dev_handle == NULL){
@@ -132,7 +99,6 @@ class LightBulb : public Device
         }
         void standardLightBulbDevice(const char *dev_name, void *priv_data, bool power)
         {
-            setDeviceName(dev_name);
             esp_rmaker_device_t *dev_handle = esp_rmaker_lightbulb_device_create(dev_name, priv_data, power);
             setDeviceHandle(dev_handle);
             if(dev_handle == NULL){
@@ -154,7 +120,6 @@ class Fan : public Device
         }
         void standardFanDevice(const char *dev_name, void *priv_data, bool power)
         {
-            setDeviceName(dev_name);
             esp_rmaker_device_t *dev_handle = esp_rmaker_fan_device_create(dev_name, priv_data, power);
             setDeviceHandle(dev_handle);
             if(dev_handle == NULL){
@@ -176,7 +141,6 @@ class TemperatureSensor : public Device
         }
         void standardTemperatureSensorDevice(const char *dev_name, void *priv_data, float temp)
         {
-            setDeviceName(dev_name);
             esp_rmaker_device_t *dev_handle = esp_rmaker_temp_sensor_device_create(dev_name, priv_data, temp);
             setDeviceHandle(dev_handle);
             if(dev_handle == NULL){

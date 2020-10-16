@@ -1,5 +1,5 @@
 #include "RMakerDevice.h"
-#include <esp_rmaker_core.h>
+
 class Node
 {
     private:
@@ -10,7 +10,6 @@ class Node
         {
             node = NULL;
         }
-
         void setNodeHandle(esp_rmaker_node_t *rnode)
         {
             node = rnode;

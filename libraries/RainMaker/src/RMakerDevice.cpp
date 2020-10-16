@@ -11,10 +11,7 @@ Param param;
 
 static esp_err_t write_callback(const device_handle_t *dev_handle, const param_handle_t *par_handle, const param_val_t val, void *priv_data, write_ctx_t *ctx)
 {
-    device.setDeviceName(esp_rmaker_device_get_name(dev_handle));
     device.setDeviceHandle(dev_handle);
-
-    param.setParamName( esp_rmaker_param_get_name(par_handle));
     param.setParamHandle(par_handle);
 
     write_cb(device, param, val, priv_data, ctx);
@@ -23,10 +20,7 @@ static esp_err_t write_callback(const device_handle_t *dev_handle, const param_h
 
 static esp_err_t read_callback(const device_handle_t *dev_handle, const param_handle_t *par_handle, void *priv_data, read_ctx_t *ctx)
 {
-    device.setDeviceName(esp_rmaker_device_get_name(dev_handle));
     device.setDeviceHandle(dev_handle);
-
-    param.setParamName( esp_rmaker_param_get_name(par_handle));
     param.setParamHandle(par_handle);
 
     read_cb(device, param, priv_data, ctx);
@@ -71,7 +65,6 @@ esp_err_t Device::addParam(Param parameter)
         log_e("Adding custom parameter error");
         return err;
     }
-    mp.insert({parameter.getParamName(), parameter.getParamHandle()});
     return ESP_OK;
 }
 
@@ -79,82 +72,75 @@ esp_err_t Device::addParam(Param parameter)
 esp_err_t Device::addNameParam(const char *param_name)
 {
     param_handle_t *param = esp_rmaker_name_param_create(param_name, getDeviceName());
-    mp.insert({param_name, param});
     return esp_rmaker_device_add_param(getDeviceHandle(), param);
 }
 
 esp_err_t Device::addPowerParam(bool val, const char *param_name)
 {
     param_handle_t *param = esp_rmaker_power_param_create(param_name, val);
-    mp.insert({param_name, param});
     return esp_rmaker_device_add_param(getDeviceHandle(), param);
 }
 
 esp_err_t Device::addBrightnessParam(int val, const char *param_name)
 {
     param_handle_t *param = esp_rmaker_brightness_param_create(param_name, val);
-    mp.insert({param_name, param});
     return esp_rmaker_device_add_param(getDeviceHandle(), param);
 }
 
 esp_err_t Device::addHueParam(int val, const char *param_name)
 {
     param_handle_t *param = esp_rmaker_hue_param_create(param_name, val);
-    mp.insert({param_name, param});
     return esp_rmaker_device_add_param(getDeviceHandle(), param);
-
 }
 
 esp_err_t Device::addSaturationParam(int val, const char *param_name)
 {
     param_handle_t *param = esp_rmaker_saturation_param_create(param_name, val);
-    mp.insert({param_name, param});
     return esp_rmaker_device_add_param(getDeviceHandle(), param);
 }
 
 esp_err_t Device::addIntensityParam(int val, const char *param_name)
 {
     param_handle_t *param = esp_rmaker_intensity_param_create(param_name, val);
-    mp.insert({param_name, param});
     return esp_rmaker_device_add_param(getDeviceHandle(), param);
 }
 
 esp_err_t Device::addCCTParam(int val, const char *param_name)
 {
     param_handle_t *param = esp_rmaker_cct_param_create(param_name, val);
-    mp.insert({param_name, param});
     return esp_rmaker_device_add_param(getDeviceHandle(), param);
 }
 
 esp_err_t Device::addDirectionParam(int val, const char *param_name)
 {
     param_handle_t *param = esp_rmaker_direction_param_create(param_name, val); 
-    mp.insert({param_name, param});
     return esp_rmaker_device_add_param(getDeviceHandle(), param);
 }
 
 esp_err_t Device::addSpeedParam(int val, const char *param_name)
 {
     param_handle_t *param = esp_rmaker_speed_param_create(param_name, val);
-    mp.insert({param_name, param});
     return esp_rmaker_device_add_param(getDeviceHandle(), param);
 }
 
 esp_err_t Device::addTempratureParam(float val, const char *param_name)
 {   
     param_handle_t *param = esp_rmaker_temperature_param_create(param_name, val);
-    mp.insert({param_name, param});
     return esp_rmaker_device_add_param(getDeviceHandle(), param);
 }
 
-void Device::assignPrimaryParam(const char *param_name)
+param_handle_t *Device::getParamByName(const char *param_name)
 {
-    if(mp.find(param_name) == mp.end()){
-        log_e("Invalid Parameter");
-        return;
+    return esp_rmaker_device_get_param_by_name(getDeviceHandle(), param_name);
+}
+
+esp_err_t Device::assignPrimaryParam(param_handle_t *param)
+{
+    err = esp_rmaker_device_assign_primary_param(getDeviceHandle(), param);
+    if(err != ESP_OK){
+        log_e("Assigning primary param error");
     }
-    const param_handle_t *param = mp[param_name];
-    esp_rmaker_device_assign_primary_param(getDeviceHandle(), param);
+    return err;
 }
 
 const param_handle_t* getParamHandlebyName(const esp_rmaker_device_t *device_handle, const char *param_name)

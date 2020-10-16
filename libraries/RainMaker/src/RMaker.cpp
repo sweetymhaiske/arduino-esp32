@@ -1,23 +1,9 @@
 #include "RMaker.h"
 #include "WiFi.h"
-#include <esp_wifi.h>
-#include <esp_rmaker_user_mapping.h>
-#include <esp_rmaker_core.h>
-#include <esp_err.h>
-#include <esp_rmaker_standard_params.h>
 #include <esp_rmaker_schedule.h>
+#include <esp_rmaker_utils.h>
 
 static esp_err_t err;
-
-void RMakerClass::enableRainMaker()
-{
-    rainMakerEnable = true;
-}
-
-bool RMakerClass::isRainMakerEnabled()
-{
-    return rainMakerEnable;
-}
 
 static void event_handler(void *arg, esp_event_base_t event_base, int event_id, void *event_data)
 {
@@ -49,10 +35,7 @@ void RMakerClass::setTimeSync(bool val)
 Node RMakerClass::initNode(const char *name, const char *type)
 {
     Node node;
-    enableRainMaker();
-
     esp_event_handler_register(RMAKER_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL);
-
     esp_rmaker_node_t *rnode = NULL;
     rnode = esp_rmaker_node_init(&rainmaker_cfg, name, type);
     if (!rnode){
@@ -90,6 +73,15 @@ esp_err_t RMakerClass::deinitNode(Node rnode)
     return err;
 }
 
+esp_err_t RMakerClass::setTimeZone(const char *tz)
+{
+    err = esp_rmaker_time_set_timezone(tz);
+    if(err != ESP_OK) {
+        log_e("Setting time zone error");
+    }
+    return err;
+}
+
 esp_err_t RMakerClass::enableSchedule()
 {
     err = esp_rmaker_schedule_enable();
@@ -99,10 +91,10 @@ esp_err_t RMakerClass::enableSchedule()
     return err;
 }
 
-esp_err_t RMakerClass::enableOTA(ota_type_t type)
+esp_err_t RMakerClass::enableOTA(ota_type_t type, const char *cert)
 {
     esp_rmaker_ota_config_t ota_config;
-    ota_config.server_cert = ESP_RMAKER_OTA_DEFAULT_SERVER_CERT;
+    ota_config.server_cert = cert;
     err = esp_rmaker_ota_enable(&ota_config, type);
     if(err != ESP_OK) {
         log_e("OTA enable failed");

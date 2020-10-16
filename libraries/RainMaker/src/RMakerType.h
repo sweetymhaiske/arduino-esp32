@@ -1,5 +1,7 @@
 #include <esp_rmaker_core.h>
 #include <esp_rmaker_ota.h>
+#include <esp_err.h>
+#include <esp32-hal.h>
 
 typedef esp_rmaker_node_t* node_t;
 typedef esp_rmaker_node_info_t node_info_t;
@@ -13,7 +15,7 @@ typedef esp_rmaker_ota_type_t ota_type_t;
 #define DEFAULT_SWITCH_POWER        true
 #define DEFAULT_LIGHT_POWER         true
 #define DEFAULT_LIGHT_BRIGHTNESS    25
-#define DEFAULT_FAN_POWER           false
+#define DEFAULT_FAN_POWER           true
 #define DEFAULT_FAN_SPEED           3
 #define DEFAULT_TEMPERATURE         25.0
 #define REPORTING_PERIOD            60 /* Seconds */

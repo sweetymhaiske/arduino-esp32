@@ -207,18 +207,25 @@ esp_err_t deleteDevice();
 
 ### my_device.addXParam()
 It adds standard parameter to the device.
-> NOTE : X is the name of parameter
+> NOTE : X is the default name by which parameter is referred, you can specify your own name to each parameter.
+> Default
+> Eg. `my_device.addPowerParam()` here power parameter is referred with name Power.
+> Eg. `my_device.addHueParam()` here name parameter is referred with name Hue.
+> You can specify your own name to each parameter
+> Eg. `my_device.addNameParam("NickName")` here name parameter is referred with name NickName.
+> Eg. `my_device.addPowerParam(true, "FanPower")` here power parameter is referred with name FanPower.
+ 
 ```
-my_device.addNameParam();
-my_device.addPowerParam(bool val);
-my_device.addBrightnessParam(int val);    
-my_device.addHueParam(int val);
-my_device.addSaturationParam(int val);
-my_device.addIntensityParam(int val);
-my_device.addCCTParam(int val);
-my_device.addDirectionParam(int val);
-my_device.addSpeedParam(int val);
-my_device.addTempratureParam(float val);
+esp_err_t addNameParam(const char *param_name = ESP_RMAKER_DEF_NAME_PARAM);
+esp_err_t addPowerParam(bool val, const char *param_name = ESP_RMAKER_DEF_POWER_NAME);
+esp_err_t addBrightnessParam(int val, const char *param_name = ESP_RMAKER_DEF_BRIGHTNESS_NAME);
+esp_err_t addHueParam(int val, const char *param_name = ESP_RMAKER_DEF_HUE_NAME);
+esp_err_t addSaturationParam(int val, const char *param_name = ESP_RMAKER_DEF_SATURATION_NAME);
+esp_err_t addIntensityParam(int val, const char *param_name = ESP_RMAKER_DEF_INTENSITY_NAME);
+esp_err_t addCCTParam(int val, const char *param_name = ESP_RMAKER_DEF_CCT_NAME);
+esp_err_t addDirectionParam(int val, const char *param_name = ESP_RMAKER_DEF_DIRECTION_NAME);
+esp_err_t addSpeedParam(int val, const char *param_name = ESP_RMAKER_DEF_SPEED_NAME);
+esp_err_t addTempratureParam(float val, const char *param_name = ESP_RMAKER_DEF_TEMPERATURE_NAME);
 ```
 * **Standard Parameters**
 
@@ -233,15 +240,20 @@ my_device.addTempratureParam(float val);
     * Direction : ESP_RMAKER_DEF_DIRECTION_NAME
     * Speed : ESP_RMAKER_DEF_SPEED_NAME
     * Temperature : ESP_RMAKER_DEF_TEMPERATURE_NAME
-> NOTE : Care should be taken while accessing name of parameter. Above mentioned are the two ways using which parameters can be accessed. Either LHS or RHS.
+> NOTE : Care should be taken while accessing name of parameter. Above mentioned are the two ways using which default name of parameters can be accessed. Either LHS or RHS.
 
 ### my_device.assignPrimaryParam()
-It assigns a parameter (already added using addXParam()) as a primary parameter, which can be used by clients (phone apps specifically) to give prominence to it.
+It assigns a parameter (already added using addXParam() or addParam()) as a primary parameter, which can be used by clients (phone apps specifically) to give prominence to it.
 ```
-void assignPrimaryParam(char * param_name);
+esp_err_t assignPrimaryParam(param_handle_t * param);
 ```
 * **Parameters**
-1. `param_name` : Name of the parameter.
+1. `param` : Handle of the parameter. It should be obtained using `my_device.getParamByName()`.
+```
+param_handle_t * getParamByName(const char * param_name);
+```
+> NOTE :
+> `param_name` : It is the name of the parameter which was added using addXparam() or addParam().
 
 ### my_device.addParam()
 It allows user to add custom parameter to the device created using `Param` class.

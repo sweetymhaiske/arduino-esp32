@@ -1,15 +1,9 @@
-#include "RMaker.h"
-#include <esp_rmaker_user_mapping.h>
 #include <qrcode.h>
 
 #define PROV_QR_VERSION "v1"
-#define PROV_TRANSPORT_SOFTAP   "softap"
-#define PROV_TRANSPORT_BLE      "ble"
 #define QRCODE_BASE_URL     "https://rainmaker.espressif.com/qrcode.html"
 
-const char *transport_mode;
-
-static void print_qr(const char *name, const char *pop, const char *transport)
+static void printQR(const char *name, const char *pop, const char *transport)
 {
     if (!name || !pop || !transport) {
         log_w("Cannot generate QR code payload. Data missing.");

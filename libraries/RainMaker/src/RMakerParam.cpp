@@ -1,6 +1,4 @@
 #include "RMakerParam.h"
-#include <esp_err.h>
-#include <esp32-hal.h>
 
 static esp_err_t err;
 
