@@ -1,7 +1,6 @@
 #include "RMakerParam.h"
 #include <esp_rmaker_standard_devices.h>
 #include <esp_rmaker_standard_params.h>
-#include <map>
 
 class Device
 {
@@ -33,11 +32,11 @@ class Device
             return device_handle;
         }
         
-        typedef void (*deviceWriteCb)(Device, Param, const param_val_t val, void *priv_data, write_ctx_t *ctx);
-        typedef void (*deviceReadCb)(Device, Param, void *priv_data, read_ctx_t *ctx);
+        typedef void (*deviceWriteCb)(Device*, Param*, const param_val_t val, void *priv_data, write_ctx_t *ctx);
+        typedef void (*deviceReadCb)(Device*, Param*, void *priv_data, read_ctx_t *ctx);
 
         esp_err_t deleteDevice();
-        void addCb(deviceWriteCb write_cb, deviceReadCb read_cb);
+        void addCb(deviceWriteCb write_cb, deviceReadCb read_cb = NULL);
         esp_err_t addDeviceAttr(const char *attr_name, const char *val);
         param_handle_t *getParamByName(const char *param_name);
         esp_err_t assignPrimaryParam(param_handle_t *param);
@@ -70,9 +69,9 @@ class Switch : public Device
     public:
         Switch()
         {
-            standardSwitchDevice("Switch", NULL, DEFAULT_SWITCH_POWER);
+            standardSwitchDevice("Switch", NULL, true);
         }
-        Switch(const char *dev_name, void *priv_data = NULL, bool power = DEFAULT_SWITCH_POWER)
+        Switch(const char *dev_name, void *priv_data = NULL, bool power = true)
         {
             standardSwitchDevice(dev_name, priv_data, power);
         }
@@ -91,9 +90,9 @@ class LightBulb : public Device
     public:
         LightBulb()
         {
-            standardLightBulbDevice("Light", NULL, DEFAULT_LIGHT_POWER);
+            standardLightBulbDevice("Light", NULL, true);
         }
-        LightBulb(const char *dev_name, void *priv_data = NULL, bool power = DEFAULT_LIGHT_POWER)
+        LightBulb(const char *dev_name, void *priv_data = NULL, bool power = true)
         {
             standardLightBulbDevice(dev_name, priv_data, power);
         }
@@ -112,9 +111,9 @@ class Fan : public Device
     public:
         Fan()
         {
-            standardFanDevice("Fan", NULL, DEFAULT_FAN_POWER);
+            standardFanDevice("Fan", NULL, true);
         }
-        Fan(const char *dev_name, void *priv_data = NULL, bool power = DEFAULT_FAN_POWER)
+        Fan(const char *dev_name, void *priv_data = NULL, bool power = true)
         {
             standardFanDevice(dev_name, priv_data, power);
         }
@@ -133,9 +132,9 @@ class TemperatureSensor : public Device
     public:
         TemperatureSensor()
         {
-            standardTemperatureSensorDevice("Temperature-Sensor", NULL, DEFAULT_TEMPERATURE);
+            standardTemperatureSensorDevice("Temperature-Sensor", NULL, 25.0);
         }
-        TemperatureSensor(const char *dev_name, void *priv_data = NULL, float temp = DEFAULT_TEMPERATURE)
+        TemperatureSensor(const char *dev_name, void *priv_data = NULL, float temp = 25.0)
         {
             standardTemperatureSensorDevice(dev_name, priv_data, temp);
         }

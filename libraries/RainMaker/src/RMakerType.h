@@ -12,14 +12,6 @@ typedef esp_rmaker_device_t device_handle_t;
 typedef esp_rmaker_param_t param_handle_t;
 typedef esp_rmaker_ota_type_t ota_type_t;
 
-#define DEFAULT_SWITCH_POWER        true
-#define DEFAULT_LIGHT_POWER         true
-#define DEFAULT_LIGHT_BRIGHTNESS    25
-#define DEFAULT_FAN_POWER           true
-#define DEFAULT_FAN_SPEED           3
-#define DEFAULT_TEMPERATURE         25.0
-#define REPORTING_PERIOD            60 /* Seconds */
-
 param_val_t value(int);
 param_val_t value(bool);
 param_val_t value(char *);

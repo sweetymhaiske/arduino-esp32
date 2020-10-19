@@ -1,11 +1,11 @@
 #include "RMakerDevice.h"
 
 static esp_err_t err;
-typedef void (*deviceWriteCb)(Device, Param, const param_val_t val, void *priv_data, write_ctx_t *ctx);
-typedef void (*deviceReadCb)(Device, Param, void *priv_data, read_ctx_t *ctx);
+typedef void (*deviceWriteCb)(Device*, Param*, const param_val_t val, void *priv_data, write_ctx_t *ctx);
+typedef void (*deviceReadCb)(Device*, Param*, void *priv_data, read_ctx_t *ctx);
 
-void (*write_cb)(Device, Param, param_val_t, void*, write_ctx_t*);
-void (*read_cb)(Device, Param, void*, read_ctx_t*);
+void (*write_cb)(Device*, Param*, param_val_t, void*, write_ctx_t*);
+void (*read_cb)(Device*, Param*, void*, read_ctx_t*);
 Device device;
 Param param;
 
@@ -14,7 +14,7 @@ static esp_err_t write_callback(const device_handle_t *dev_handle, const param_h
     device.setDeviceHandle(dev_handle);
     param.setParamHandle(par_handle);
 
-    write_cb(device, param, val, priv_data, ctx);
+    write_cb(&device, &param, val, priv_data, ctx);
     return ESP_OK;
 }
 
@@ -23,7 +23,7 @@ static esp_err_t read_callback(const device_handle_t *dev_handle, const param_ha
     device.setDeviceHandle(dev_handle);
     param.setParamHandle(par_handle);
 
-    read_cb(device, param, priv_data, ctx);
+    read_cb(&device, &param, priv_data, ctx);
     return ESP_OK;
 }
 

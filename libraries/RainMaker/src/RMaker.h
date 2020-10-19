@@ -11,9 +11,9 @@ class RMakerClass
     public:
     
         void setTimeSync(bool val);
-        Node initNode(const char *name, const char *type);
+        Node initNode(const char *name, const char *type = "ESP RainMaker with Arduino");
         esp_err_t deinitNode(Node node);
-        esp_err_t setTimeZone(const char *tz);
+        esp_err_t setTimeZone(const char *tz = "Asia/Shanghai");
         esp_err_t enableSchedule();
         esp_err_t enableOTA(ota_type_t type, const char *cert = ESP_RMAKER_OTA_DEFAULT_SERVER_CERT);
         esp_err_t start();

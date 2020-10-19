@@ -81,6 +81,18 @@ esp_err_t enableSchedule();
 1. ESP_OK : On success.
 2. Error in case of failure.
 
+### RMaker.setTimeZone()
+This API set's the timezone as a user friendly location string. Check [here](https://rainmaker.espressif.com/docs/time-service.html) for a list of valid values.
+```
+esp_err_t setTimeZone(const char *tz);
+```
+* **Parameter**
+1. `tz' : Valid values as  specified in documentatiion.
+
+* **Return**
+1. ESP_OK : On success
+2. Error in case of failure
+
 ## ESP RainMaker NODE APIs
 `Node` class exposes the API's for node.
 > NOTE : my_node is the object of Node class.
@@ -154,12 +166,10 @@ esp_err_t removeDevice(Device device);
 
 ## ESP RainMaker DEVICE API's
 `Device` class exposes the API's for virtual devices on the node.
-> NOTE : my_device is the object of Device class.
-
-### createDevice()
-It creates the virtual device. It could be something like "Switch", "LightBulb" etc.
+Parameterized constructor is defined which creates the virtual device on the node. Using Device class object you can create your own device.
+> NOTE : my_device is the object of Device class
 ```
-Device createDevice(const char *dev_name, const char *dev_type, void *priv_data);
+Device my_device(const char *dev_name, const char *dev_type, void *priv_data);
 ```
 * **Parameters**
 1. `dev_name` : Unique device name
@@ -172,6 +182,42 @@ Device createDevice(const char *dev_name, const char *dev_type, void *priv_data)
 3. `priv_data` : Private data associated with the device. This will be passed to the callbacks.
 
 > NOTE : This created device should be added to the node using `my_node.addDevice(my_device)`.
+
+- Sample example
+```
+Device my_device("Switch");
+Device my_device("Switch", NULL, NULL);
+```
+> Here, dev_name is compulsory, rest are optional.
+
+### Standard Device
+- Classes are defined for the standard devices.
+- Creating object of these class creates the standard device with default parameters to it.
+- Class for standard devices
+    * Switch
+    * LightBulb
+    * TemperatureSensor
+    * Fan
+```
+Switch my_switch(const char *dev_name, void *priv_data, bool power);
+```
+* **Parameters**
+1. `dev_name` : Unique device name by default it is "switch" for switch device.
+2. `priv_data` : Private data associated with the device. This will be passed to the callbacks.
+3. `power` : It is the value that can be set for primary parameter.
+
+- Sample example for standard device.
+```
+Switch switch1;
+Switch switch2("switch2", NULL, true);
+```
+`"switch2"` : Name for standard device.
+
+`NULL` : Private data for the device must be specified, which will be used in callback.
+
+`true` : Default value for the primary param, in case of switch it is power.
+
+> NOTE : No parameter are compulsory for standard devices.
 
 ### my_device.getDeviceName()
 It returns the name of the Device.
@@ -210,7 +256,7 @@ It adds standard parameter to the device.
 > NOTE : X is the default name by which parameter is referred, you can specify your own name to each parameter.
 > Default
 > Eg. `my_device.addPowerParam()` here power parameter is referred with name Power.
-> Eg. `my_device.addHueParam()` here name parameter is referred with name Hue.
+> Eg. `my_device.addHueParam()` here hue parameter is referred with name Hue.
 > You can specify your own name to each parameter
 > Eg. `my_device.addNameParam("NickName")` here name parameter is referred with name NickName.
 > Eg. `my_device.addPowerParam(true, "FanPower")` here power parameter is referred with name FanPower.
@@ -297,25 +343,6 @@ Value can be accessed as below
 3. `float` : val.val.f
 4. `char *` : val.val.s
 
-# Standard Device
-- Classes are defined for the standard devices.
-- Creating object of these class creates the standard device along with default parameters to it.
-- Class for standard devices
-    * Switch
-    * LightBulb
-    * TemperatureSensor
-    * Fan
-- Sample example
-```
-Switch switch1;
-Switch switch2("switch2", NULL, true);
-```
-`"switch2"` : Name for standard device.
-
-`NULL` : Private data for the device must be specified, which will be used in callback.
-
-`true` : Default value for the primary param, in case of switch it is power.
-
 ## ESP RainMaker PARAM API's
 `Param` class expose API for creating custom parameters for the devices and report and update values associated with parameter to the ESP RainMaker cloud.
 > NOTE : my_param is the object of Param class.
@@ -389,25 +416,14 @@ esp_err_t updateAndReport(param_val_t val);
 > - This API should always be called inside device write callback, if you aimed at updating n reporting parameter values, changed via RainMaker Client (Phone App), to the ESP RainMaker cloud.
 > - If not called then paramter values will not be updated to the ESP RainMaker cloud.
 
-
-## ESP RainMaker SERVICE API's
-> NOTE : my_service is the object of Device class
-
-### createService()
-This API will create a "Service". It is exactly same like a device in terms of structure and so, all APIs for device are also valid for a service. A service could be something like OTA, diagnostics, etc.
+### printQR()
+This API displays QR code using which you can carry out provisioning.
 ```
-Device createService(const char *serv_name, const char *serv_type, void *priv_data);
+printQR(const char *serv_name, const char *pop, const char *transport);
 ```
 * **Parameters**
-1. `serv_name` : The unique service name. Name of the service should not clash with device name.
-2. `serv_type` : Service Type. It can be kept NULL.
-3. `priv_data` : Private Data associated with the service will be passed to the callback. It can be kept NULL.
-> NOTE : This service should be added to the node using `my_node.addDevice(my_service);`
-
-### my_service.getServiceName()
-It returns the name of the Service.
-```
-const char * getServiceName();
-```
-* **Return**
-1. `char *` : Service Name. 
+1. `name` : Service name which was used in provisioning API.
+2. `pop` : Proof of posession which was used in provisioning API.
+3. `transport` : 
+    1. `softap` : In case of provisioning using SOFTAP.
+    2. `ble` : In case of provisioning using BLE.
