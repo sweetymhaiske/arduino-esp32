@@ -53,8 +53,10 @@ set(LIBRARY_SRCS
   libraries/NetBIOS/src/NetBIOS.cpp
   libraries/Preferences/src/Preferences.cpp
   libraries/RainMaker/src/RMaker.cpp
-  libraries/RainMaker/src/RMakerGeneric.cpp
-  libraries/RainMaker/src/RMakerOTA.cpp
+  libraries/RainMaker/src/RMakerNode.cpp
+  libraries/RainMaker/src/RMakerParam.cpp
+  libraries/RainMaker/src/RMakerDevice.cpp
+  libraries/RainMaker/src/RMakerType.cpp
   libraries/SD_MMC/src/SD_MMC.cpp
   libraries/SD/src/SD.cpp
   libraries/SD/src/sd_diskio.cpp

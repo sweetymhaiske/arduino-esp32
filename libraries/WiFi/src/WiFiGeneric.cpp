@@ -1205,15 +1205,3 @@ uint8_t WiFiGenericClass::calculateSubnetCIDR(IPAddress subnetMask) {
 
 	return CIDR;
 }
-
-//Initalize WIFI
-void WiFiGenericClass::init()
-{
-    wifiLowLevelInit(true);
-}
-
-//DeInitialize WIFI
-void WiFiGenericClass::deinit()
-{
-    wifiLowLevelDeinit();
-}

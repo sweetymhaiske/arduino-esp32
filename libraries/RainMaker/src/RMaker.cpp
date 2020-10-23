@@ -1,31 +1,8 @@
 #include "RMaker.h"
-#include "WiFi.h"
 #include <esp_rmaker_schedule.h>
 #include <esp_rmaker_utils.h>
-
+bool wifiLowLevelInit(bool persistent);
 static esp_err_t err;
-
-static void event_handler(void *arg, esp_event_base_t event_base, int event_id, void *event_data)
-{
-    if (event_base == RMAKER_EVENT) {
-        switch (event_id) {
-            case RMAKER_EVENT_INIT_DONE:
-                log_i("RainMaker Initialised.");
-                break;
-            case RMAKER_EVENT_CLAIM_STARTED:
-                log_i("RainMaker Claim Started.");
-                break;
-            case RMAKER_EVENT_CLAIM_SUCCESSFUL:
-                log_i("RainMaker Claim Successful.");
-                break;
-            case RMAKER_EVENT_CLAIM_FAILED:
-                log_i("RainMaker Claim Failed.");
-                break;
-            default:
-                log_i("Unhandled RainMaker Event:");
-        }
-    }   
-}
 
 void RMakerClass::setTimeSync(bool val)
 {
@@ -34,8 +11,8 @@ void RMakerClass::setTimeSync(bool val)
 
 Node RMakerClass::initNode(const char *name, const char *type)
 {
+    wifiLowLevelInit(true);
     Node node;
-    esp_event_handler_register(RMAKER_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL);
     esp_rmaker_node_t *rnode = NULL;
     rnode = esp_rmaker_node_init(&rainmaker_cfg, name, type);
     if (!rnode){

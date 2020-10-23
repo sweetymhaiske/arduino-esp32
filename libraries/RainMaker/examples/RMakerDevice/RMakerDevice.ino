@@ -59,7 +59,6 @@ void setup()
     pinMode(gpio_switch, OUTPUT);
     pinMode(gpio_fan, OUTPUT);
 
-    WiFi.init();
     Node my_node;    
     my_node = RMaker.initNode("ESP RainMaker Node");
 

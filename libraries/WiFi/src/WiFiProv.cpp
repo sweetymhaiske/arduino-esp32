@@ -71,6 +71,15 @@ static void get_device_service_name(prov_scheme_t prov_scheme, char *service_nam
 #endif
 }
 
+static esp_err_t custom_prov_data_handler(uint32_t session_id, const uint8_t *inbuf, ssize_t inlen, uint8_t **outbuf, ssize_t *outlen, void *priv_data){
+    if (inbuf) {
+    	log_d("Received data: %.*s", inlen, (char *)inbuf);
+    }
+    *outbuf = NULL;
+    *outlen = 0;
+    return ESP_OK;
+}
+
 void WiFiProvClass :: beginProvision(prov_scheme_t prov_scheme, scheme_handler_t scheme_handler, wifi_prov_security_t security, const char * pop, const char *service_name, const char *service_key, uint8_t * uuid)
 {
     prov_enable = true;
@@ -147,12 +156,25 @@ void WiFiProvClass :: beginProvision(prov_scheme_t prov_scheme, scheme_handler_t
 #if CONFIG_IDF_TARGET_ESP32
         }
 #endif
-
+        if(wifi_prov_mgr_endpoint_create("custom-data") != ESP_OK){
+        	log_e("wifi_prov_mgr_endpoint_create failed!");
+        	return;
+        } else {
+            log_d("custom-data endpoint create");
+        }
+      
         if(wifi_prov_mgr_start_provisioning(security, pop, service_name, service_key) != ESP_OK){
         	log_e("wifi_prov_mgr_start_provisioning failed!");
         	return;
         }
-
+        
+        if(wifi_prov_mgr_endpoint_register("custom-data", custom_prov_data_handler, NULL) != ESP_OK){
+        	log_e("wifi_prov_mgr_endpoint_register failed!");
+        	return;
+        } else {
+            log_d("custom-data endpoint register");
+        }
+        
     } else {
         log_i("Aleardy Provisioned");
 #if ARDUHAL_LOG_LEVEL >= ARDUHAL_LOG_LEVEL_INFO
