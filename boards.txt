@@ -78,6 +78,9 @@ esp32c3.menu.PartitionScheme.fatflash.upload.maximum_size=2097152
 esp32c3.menu.PartitionScheme.app3M_fat9M_16MB=16M Flash (3MB APP/9MB FATFS)
 esp32c3.menu.PartitionScheme.app3M_fat9M_16MB.build.partitions=app3M_fat9M_16MB
 esp32c3.menu.PartitionScheme.app3M_fat9M_16MB.upload.maximum_size=3145728
+esp32c3.menu.PartitionScheme.rainmaker=RainMaker
+esp32c3.menu.PartitionScheme.rainmaker.build.partitions=rainmaker
+esp32c3.menu.PartitionScheme.rainmaker.upload.maximum_size=1966080
 
 esp32c3.menu.CPUFreq.160=160MHz (WiFi)
 esp32c3.menu.CPUFreq.160.build.f_cpu=160000000L

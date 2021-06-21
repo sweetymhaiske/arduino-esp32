@@ -1,5 +1,5 @@
 #include "esp_system.h"
-#if ESP_IDF_VERSION_MAJOR >= 4 && CONFIG_ESP_RMAKER_TASK_STACK && CONFIG_IDF_TARGET_ESP32
+//#if ESP_IDF_VERSION_MAJOR >= 4 && CONFIG_ESP_RMAKER_TASK_STACK && CONFIG_IDF_TARGET_ESP32
 
 #include <qrcode.h>
 
@@ -21,4 +21,4 @@ static void printQR(const char *name, const char *pop, const char *transport)
     Serial.printf("If QR code is not visible, copy paste the below URL in a browser.\n%s?data=%s\n", QRCODE_BASE_URL, payload);
 }
 
-#endif
+//#endif

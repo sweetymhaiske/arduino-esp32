@@ -1,5 +1,5 @@
 #include "esp_system.h"
-#if ESP_IDF_VERSION_MAJOR >= 4 && CONFIG_ESP_RMAKER_TASK_STACK && CONFIG_IDF_TARGET_ESP32
+//#if ESP_IDF_VERSION_MAJOR >= 4 && CONFIG_ESP_RMAKER_TASK_STACK && CONFIG_IDF_TARGET_ESP32
 
 #include "RMakerType.h"
 
@@ -35,4 +35,4 @@ class Param
         esp_err_t updateAndReport(param_val_t val);
 };
 
-#endif
+//#endif

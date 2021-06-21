@@ -1,5 +1,5 @@
 #include "esp_system.h"
-#if ESP_IDF_VERSION_MAJOR >= 4 && CONFIG_ESP_RMAKER_TASK_STACK && CONFIG_IDF_TARGET_ESP32
+//#if ESP_IDF_VERSION_MAJOR >= 4 && CONFIG_ESP_RMAKER_TASK_STACK && CONFIG_IDF_TARGET_ESP32
 
 #include "RMakerDevice.h"
 
@@ -30,4 +30,4 @@ class Node
         esp_err_t addNodeAttr(const char *attr_name, const char *val);
 };
 
-#endif
+//#endif
